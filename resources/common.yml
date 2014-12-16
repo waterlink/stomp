@@ -19,3 +19,23 @@ entities:
         values: [275, 53]
       - type: LayerIndex
         value: 1010
+
+  - name: "Exit"
+    components:
+      - type: MenuItem
+      - type: Sprite
+        value: "main_menu_exit.png"
+      - type: Position
+        values: [400, 350]
+      - type: Size
+        values: [185, 29]
+      - type: LayerIndex
+        value: 1010
+
+  - name: "Mouse Arrow"
+    components:
+      - type: MouseArrow
+      - type: Sprite
+        value: "arrow.png"
+      - type: LayerIndex
+        value: 10000

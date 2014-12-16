@@ -5,5 +5,8 @@
   :fullscreen: false
 :systems:
   - init_system
+  - mouse_arrow_system
   - sprite_system
   - menu_system
+
+  #- debug_system

@@ -8,13 +8,48 @@ module Stomp
 
     def update
       systems.each(&:update)
+      propagate_mouse_move
+      remember_mouse_position
     end
 
     def draw
       systems.each(&:draw)
     end
 
+    def button_down(id)
+      propagate_mouse_click(id)
+      propagate_keystroke(id)
+    end
+
     private
+
+    attr_reader :old_mouse_x, :old_mouse_y
+
+    def propagate_mouse_click(id)
+      return unless id == Gosu::MsLeft
+      systems.each { |x| x.mouse_click(id, mouse_x, mouse_y) }
+    end
+
+    def propagate_keystroke(id)
+      systems.each { |x| x.keystroke(id) }
+    end
+
+    def propagate_mouse_move
+      return unless mouse_moved?
+      systems.each do |system|
+        system.mouse_move(old_mouse_x, old_mouse_y, mouse_x, mouse_y)
+      end
+    end
+
+    def mouse_moved?
+      old_mouse_x && old_mouse_y &&
+        [old_mouse_x, old_mouse_y] != [mouse_x, mouse_y]
+    end
+
+    def remember_mouse_position
+      @old_mouse_x = mouse_x
+      @old_mouse_y = mouse_y
+    end
 
     def load_systems!
       systems.map! do |name|

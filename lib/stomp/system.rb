@@ -5,5 +5,14 @@ module Stomp
 
     def draw
     end
+
+    def keystroke(id)
+    end
+
+    def mouse_click(id, x, y)
+    end
+
+    def mouse_move(old_x, old_y, x, y)
+    end
   end
 end

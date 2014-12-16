@@ -6,3 +6,5 @@ Menu = Stomp.component("Menu")
 MenuItem = Stomp.component("MenuItem")
 
 Position = Stomp.component("Position", :x, :y)
+
+MouseArrow = Stomp.component("MouseArrow")

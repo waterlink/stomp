@@ -21,7 +21,17 @@ class SpriteSystem < Stomp::System
   end
 
   def sprite(path)
-    sprites[path] ||= Gosu::Image.new(window, sprite_path(path), true)
+    sprites[path] ||= load_sprite(sprite_path(path))
+  end
+
+  def load_sprite(path)
+    ensure_sprite_exists(path)
+    Gosu::Image.new(window, path, true)
+  end
+
+  def ensure_sprite_exists(path)
+    return if File.exists?(path)
+    raise LoadError, "Sprite #{path} not found"
   end
 
   def sprites
