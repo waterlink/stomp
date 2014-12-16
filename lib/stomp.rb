@@ -1,9 +1,12 @@
 $:.unshift(File.expand_path(File.join(__FILE__, "..")))
 $:.unshift(File.expand_path(File.join(__FILE__, "..", "..", "app")))
 
-require "logger"
+require "yaml"
 
 module Stomp
+  def self.config
+    @_config ||= YAML.load_file("config/config.yml")
+  end
 end
 
 %w(

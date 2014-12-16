@@ -1,25 +1,55 @@
 module Stomp
   class Window < Gosu::Window
-    def initialize(systems)
+    def initialize
       super(width, height, fullscreen?)
-    end
-
-    def width
-      @width ||= 800
-    end
-
-    def height
-      @height ||= 600
-    end
-
-    def fullscreen?
-      @fullscreen ||= false
+      self.caption = title
+      load_systems!
     end
 
     def update
     end
 
     def draw
+    end
+
+    private
+
+    def load_systems!
+      systems.map! do |name|
+        require(name)
+        constantize(name)[self]
+      end
+    end
+
+    def camel_cased(name)
+      name
+        .to_s
+        .capitalize
+        .gsub(/_([a-z])/) { $1.upcase }
+    end
+
+    def constantize(name)
+      Object.const_get(camel_cased(name))
+    end
+
+    def title
+      @_title ||= Stomp.config[:window][:title]
+    end
+
+    def width
+      @_width ||= Stomp.config[:window][:width]
+    end
+
+    def height
+      @_height ||= Stomp.config[:window][:height]
+    end
+
+    def fullscreen?
+      @_fullscreen ||= Stomp.config[:window][:fullscreen]
+    end
+
+    def systems
+      @_systems ||= Stomp.config[:systems]
     end
   end
 end
