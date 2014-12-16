@@ -4,4 +4,6 @@
   :height: 600
   :fullscreen: false
 :systems:
-  - main_menu_system
+  - init_system
+  - sprite_system
+  - menu_system

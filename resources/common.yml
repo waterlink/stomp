@@ -1,0 +1,21 @@
+entities:
+
+  - name: "Main Menu"
+    components:
+      - type: Menu
+      - type: Sprite
+        value: "main_menu.png"
+      - type: LayerIndex
+        value: 1000
+
+  - name: "Play"
+    components:
+      - type: MenuItem
+      - type: Sprite
+        value: "main_menu_play.png"
+      - type: Position
+        values: [400, 250]
+      - type: Size
+        values: [275, 53]
+      - type: LayerIndex
+        value: 1010

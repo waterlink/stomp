@@ -7,9 +7,11 @@ module Stomp
     end
 
     def update
+      systems.each(&:update)
     end
 
     def draw
+      systems.each(&:draw)
     end
 
     private
