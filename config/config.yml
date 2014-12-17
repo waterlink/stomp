@@ -8,5 +8,6 @@
   - mouse_arrow_system
   - sprite_system
   - menu_system
+  - exit_system
 
   #- debug_system

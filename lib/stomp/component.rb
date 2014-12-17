@@ -53,7 +53,7 @@ module Stomp
       end
 
       def unregister(type, id)
-        unassign_entity(component)
+        unassign_entity(components_of(type)[id])
         unassign_component(type, id)
       end
 

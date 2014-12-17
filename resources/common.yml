@@ -11,8 +11,11 @@ entities:
   - name: "Play"
     components:
       - type: MenuItem
-      - type: Sprite
-        value: "main_menu_play.png"
+        values:
+        - type: Sprite
+          value: "main_menu_play.png"
+        - type: Sprite
+          value: "main_menu_play_active.png"
       - type: Position
         values: [400, 250]
       - type: Size
@@ -23,8 +26,12 @@ entities:
   - name: "Exit"
     components:
       - type: MenuItem
-      - type: Sprite
-        value: "main_menu_exit.png"
+        values:
+          - type: Sprite
+            value: "main_menu_exit.png"
+          - type: Sprite
+            value: "main_menu_exit_active.png"
+          - type: ExitAction
       - type: Position
         values: [400, 350]
       - type: Size
