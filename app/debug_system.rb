@@ -13,7 +13,7 @@ class DebugSystem < Stomp::System
 
   private
 
-  def got(name, with:)
+  def got(name, with: [])
     Stomp.logger.debug "event #{name}#{with}"
   end
 end
