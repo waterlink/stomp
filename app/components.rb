@@ -14,5 +14,5 @@ MouseArrow = Stomp.component("MouseArrow")
 Scene = Stomp.component("Scene", :path)
 CurrentScene = Stomp.component("CurrentScene", :value)
 
-Pause = Stomp.component("Pause")
-PauseOnly = Stomp.component("PauseOnly")
+DragByMouse = Stomp.component("DragByMouse")
+DraggedByMouse = Stomp.component("DraggedByMouse")

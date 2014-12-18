@@ -26,6 +26,7 @@ end
   component
   entity
   world
+  math
 ).each do |part|
   require "stomp/#{part}"
 end

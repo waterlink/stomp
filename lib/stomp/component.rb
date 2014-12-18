@@ -103,7 +103,7 @@ module Stomp
 
       def each_component(type, &blk)
         components_of(type).each do |component|
-          next unless active_component?(component)
+          next unless component && active_component?(component)
           blk[component]
         end
       end

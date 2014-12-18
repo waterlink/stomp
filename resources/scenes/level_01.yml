@@ -11,6 +11,7 @@ worlds:
             values: [300, 300]
           - type: Size
             values: [64, 64]
+          - type: DragByMouse
 
       - name: "Ball 2"
         components:

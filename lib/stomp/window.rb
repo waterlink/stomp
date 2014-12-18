@@ -18,8 +18,12 @@ module Stomp
     end
 
     def button_down(id)
-      propagate_mouse_click(id)
       propagate_keystroke(id)
+      propagate_mouse_down(id)
+    end
+
+    def button_up(id)
+      propagate_mouse_click(id)
     end
 
     private
@@ -27,8 +31,17 @@ module Stomp
     attr_reader :old_mouse_x, :old_mouse_y
 
     def propagate_mouse_click(id)
-      return unless id == Gosu::MsLeft
+      return unless mouse_button?(id)
       systems.each { |x| x.mouse_click(id, mouse_x, mouse_y) }
+    end
+
+    def propagate_mouse_down(id)
+      return unless mouse_button?(id)
+      systems.each { |x| x.mouse_down(id, mouse_x, mouse_y) }
+    end
+
+    def mouse_button?(id)
+      id == Gosu::MsLeft
     end
 
     def propagate_keystroke(id)

@@ -9,6 +9,9 @@ module Stomp
     def keystroke(id)
     end
 
+    def mouse_down(id, x, y)
+    end
+
     def mouse_click(id, x, y)
     end
 

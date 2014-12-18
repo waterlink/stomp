@@ -12,5 +12,6 @@
   - menu_system
   - exit_system
   - scene_system
+  - drag_system
 
   #- debug_system

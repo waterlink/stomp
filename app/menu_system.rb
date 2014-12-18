@@ -76,9 +76,6 @@ class MenuSystem < Stomp::System
   end
 
   def _inside_bounding_box?(x, y, position, size)
-    [
-     x >= position.x - size.x / 2, x <= position.x + size.x / 2,
-     y >= position.y - size.y / 2, y <= position.y + size.y / 2,
-    ].all?
+    Stomp::Math.inside_bounding_box?(x, y, position.x, position.y, size.x, size.y)
   end
 end
