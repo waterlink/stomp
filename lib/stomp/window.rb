@@ -3,6 +3,7 @@ module Stomp
     def initialize
       super(width, height, fullscreen?)
       self.caption = title
+      init_worlds
       load_systems!
     end
 
@@ -51,6 +52,10 @@ module Stomp
       @old_mouse_y = mouse_y
     end
 
+    def init_worlds
+      Stomp::World.setup(common_world: common_world, active_world: default_world)
+    end
+
     def load_systems!
       systems.map! do |name|
         require(name)
@@ -87,6 +92,14 @@ module Stomp
 
     def systems
       @_systems ||= Stomp.config[:systems]
+    end
+
+    def default_world
+      @_default_world ||= Stomp.config[:default_world]
+    end
+
+    def common_world
+      @_common_world ||= Stomp.config[:common_world]
     end
   end
 end

@@ -1,48 +1,58 @@
-entities:
-
+worlds:
   - name: "Main Menu"
-    components:
-      - type: Menu
-      - type: Sprite
-        value: "main_menu.png"
-      - type: LayerIndex
-        value: 1000
+    entities:
 
-  - name: "Play"
-    components:
-      - type: MenuItem
-        values:
-        - type: Sprite
-          value: "main_menu_play.png"
-        - type: Sprite
-          value: "main_menu_play_active.png"
-      - type: Position
-        values: [400, 250]
-      - type: Size
-        values: [275, 53]
-      - type: LayerIndex
-        value: 1010
-
-  - name: "Exit"
-    components:
-      - type: MenuItem
-        values:
+      - name: "Main Menu"
+        components:
+          - type: Menu
           - type: Sprite
-            value: "main_menu_exit.png"
-          - type: Sprite
-            value: "main_menu_exit_active.png"
-          - type: ExitAction
-      - type: Position
-        values: [400, 350]
-      - type: Size
-        values: [185, 29]
-      - type: LayerIndex
-        value: 1010
+            value: "main_menu.png"
+          - type: LayerIndex
+            value: 1000
+          - type: PauseOnly
 
-  - name: "Mouse Arrow"
-    components:
-      - type: MouseArrow
-      - type: Sprite
-        value: "arrow.png"
-      - type: LayerIndex
-        value: 10000
+      - name: "Play"
+        components:
+          - type: MenuItem
+            values:
+            - type: Sprite
+              value: "main_menu_play.png"
+            - type: Sprite
+              value: "main_menu_play_active.png"
+            - type: Scene
+              value: "level_01.yml"
+          - type: Position
+            values: [400, 250]
+          - type: Size
+            values: [275, 53]
+          - type: LayerIndex
+            value: 1010
+          - type: PauseOnly
+
+      - name: "Exit"
+        components:
+          - type: MenuItem
+            values:
+              - type: Sprite
+                value: "main_menu_exit.png"
+              - type: Sprite
+                value: "main_menu_exit_active.png"
+              - type: ExitAction
+          - type: Position
+            values: [400, 350]
+          - type: Size
+            values: [185, 29]
+          - type: LayerIndex
+            value: 1010
+          - type: PauseOnly
+
+  - name: "Common"
+    entities:
+
+      - name: "Mouse Arrow"
+        components:
+          - type: MouseArrow
+          - type: Sprite
+            value: "arrow.png"
+          - type: LayerIndex
+            value: 10000

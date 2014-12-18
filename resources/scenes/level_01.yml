@@ -1,0 +1,49 @@
+active_world: "Level 1"
+worlds:
+  - name: "Level 1"
+    entities:
+
+      - name: "Ball 1"
+        components:
+          - type: Sprite
+            value: "ball.png"
+          - type: Position
+            values: [300, 300]
+          - type: Size
+            values: [64, 64]
+
+      - name: "Ball 2"
+        components:
+          - type: Sprite
+            value: "ball.png"
+          - type: Position
+            values: [364, 300]
+          - type: Size
+            values: [64, 64]
+
+      - name: "Ball 3"
+        components:
+          - type: Sprite
+            value: "ball.png"
+          - type: Position
+            values: [428, 300]
+          - type: Size
+            values: [64, 64]
+
+      - name: "Ball 4"
+        components:
+          - type: Sprite
+            value: "ball.png"
+          - type: Position
+            values: [492, 300]
+          - type: Size
+            values: [64, 64]
+
+      - name: "Ball 5"
+        components:
+          - type: Sprite
+            value: "ball.png"
+          - type: Position
+            values: [556, 300]
+          - type: Size
+            values: [64, 64]

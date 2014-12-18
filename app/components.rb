@@ -10,3 +10,9 @@ ExitAction = Stomp.component("ExitAction")
 Position = Stomp.component("Position", :x, :y)
 
 MouseArrow = Stomp.component("MouseArrow")
+
+Scene = Stomp.component("Scene", :path)
+CurrentScene = Stomp.component("CurrentScene", :value)
+
+Pause = Stomp.component("Pause")
+PauseOnly = Stomp.component("PauseOnly")

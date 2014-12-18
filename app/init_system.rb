@@ -13,17 +13,15 @@ class InitSystem < Stomp::System
   alias_method :initialized?, :initialized
 
   def load_entities!
-    entities.each do |hash|
-      Stomp::Entity.from_hash(hash)
-    end
+    Stomp::World.from_hash_list(worlds)
   end
 
   def initialized!
     @initialized = true
   end
 
-  def entities
-    data["entities"]
+  def worlds
+    data["worlds"]
   end
 
   def data

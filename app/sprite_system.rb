@@ -1,6 +1,8 @@
 class SpriteSystem < Stomp::System
   def draw
     Stomp::Component.each_entity(Sprite) do |entity|
+      next if entity[PauseOnly] && paused?
+
       entity[Position] ||= Position[0, 0]
       entity[LayerIndex] ||= LayerIndex[0]
       entity[Size] ||= Size[0, 0]
@@ -32,6 +34,10 @@ class SpriteSystem < Stomp::System
   def ensure_sprite_exists(path)
     return if File.exists?(path)
     raise LoadError, "Sprite #{path} not found"
+  end
+
+  def paused?
+    
   end
 
   def sprites

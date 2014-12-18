@@ -25,6 +25,7 @@ end
   window
   component
   entity
+  world
 ).each do |part|
   require "stomp/#{part}"
 end

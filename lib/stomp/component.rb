@@ -102,7 +102,15 @@ module Stomp
       end
 
       def each_component(type, &blk)
-        components_of(type).each(&blk)
+        components_of(type).each do |component|
+          next unless active_component?(component)
+          blk[component]
+        end
+      end
+
+      def active_component?(component)
+        return unless component.entity
+        World.active_world?(component.entity.world)
       end
 
       def components_of(type)

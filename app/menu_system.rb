@@ -32,7 +32,7 @@ class MenuSystem < Stomp::System
 
   def apply_action(entity, x, y)
     return unless entity[MenuItem].hovered
-    _apply_action(entity, entity[MenuItem].action)
+    _apply_action(Stomp::Entity.new, entity[MenuItem].action)
   end
 
   def apply_nonhover(entity, x, y)
