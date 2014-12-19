@@ -9,7 +9,6 @@ worlds:
             value: "main_menu.png"
           - type: LayerIndex
             value: 1000
-          - type: PauseOnly
 
       - name: "Play"
         components:
@@ -27,7 +26,6 @@ worlds:
             values: [275, 53]
           - type: LayerIndex
             value: 1010
-          - type: PauseOnly
 
       - name: "Exit"
         components:
@@ -44,7 +42,6 @@ worlds:
             values: [185, 29]
           - type: LayerIndex
             value: 1010
-          - type: PauseOnly
 
   - name: "Common"
     entities:
