@@ -1,6 +1,8 @@
 class CollisionSystem < Stomp::System
   DEFAULT_RESTITUTION = 0.9
   DEFAULT_MASS = 5
+  DEFAULT_STATIC_FRICTION = 0.7
+  DEFAULT_DYNAMIC_FRICTION = 0.3
 
   POSITIONAL_CORRECTION_PERCENTAGE = 0.8
   POSITIONAL_CORRECTION_SLOP = 0.999999
@@ -35,8 +37,8 @@ class CollisionSystem < Stomp::System
 
     cx, cy = [nx, ny]
 
-    ex, ey = [(a[AabbShape].max_x - a[AabbShape].min_x) / 2.0,
-              (a[AabbShape].max_y - a[AabbShape].min_y) / 2.0]
+    ex, ey = [(a[AabbShape].max_x - a[AabbShape].min_x) * 0.5,
+              (a[AabbShape].max_y - a[AabbShape].min_y) * 0.5]
 
     cx, cy = [clamp(cx, -ex, ex),
               clamp(cy, -ey, ey)]
@@ -101,6 +103,7 @@ class CollisionSystem < Stomp::System
     return unless a
     x, y, *other = a
     r = Math.sqrt(x ** 2 + y ** 2)
+    return a if r == 0
     [x / r, y / r, *other]
   end
 
@@ -149,14 +152,54 @@ class CollisionSystem < Stomp::System
     b[Velocity].x += b[Mass].inverted * ix
     b[Velocity].y += b[Mass].inverted * iy
 
+    apply_friction(normal, a, b, j)
+
     positional_correction(normal, a, b)
+
+  end
+
+  def apply_friction(normal, a, b, j)
+    puts normal.inspect
+    a[StaticFriction] ||= StaticFriction[DEFAULT_STATIC_FRICTION]
+    a[DynamicFriction] ||= DynamicFriction[DEFAULT_DYNAMIC_FRICTION]
+
+    b[StaticFriction] ||= StaticFriction[DEFAULT_STATIC_FRICTION]
+    b[DynamicFriction] ||= DynamicFriction[DEFAULT_DYNAMIC_FRICTION]
+
+    nx, ny = normal
+
+    rvx, rvy = [b[Velocity].x - a[Velocity].x,
+                b[Velocity].y - a[Velocity].y]
+
+    tx, ty = normalize([rvx - (rvx * nx + rvy * ny) * nx,
+                        rvy - (rvx * nx + rvy * ny) * ny])
+
+    jt = -(rvx * tx + rvy * ty)
+    jt /= a[Mass].inverted + b[Mass].inverted
+
+    mu = (a[StaticFriction].value + b[StaticFriction].value) * 0.5
+
+    fix, fiy = if jt.abs < j * mu
+                 [jt * tx, jt * ty]
+               else
+                 dmu = (a[DynamicFriction].value + b[DynamicFriction].value) * 0.5
+                 [-j * tx * dmu, -j * ty * dmu]
+               end
+
+    a[Velocity].x -= a[Mass].inverted * fix
+    a[Velocity].y -= a[Mass].inverted * fiy
+
+    b[Velocity].x += b[Mass].inverted * fix
+    b[Velocity].y += b[Mass].inverted * fiy
   end
 
   def positional_correction(normal, a, b)
     nx, ny, penetration = normal
 
+    puts normal.inspect
+
     inv_mass = a[Mass].inverted + b[Mass].inverted
-    c = [penetration * POSITIONAL_CORRECTION_SLOP, 0].max / inv_mass * POSITIONAL_CORRECTION_PERCENTAGE
+    c = [1.0 * penetration * POSITIONAL_CORRECTION_SLOP, 0.0].max / inv_mass * POSITIONAL_CORRECTION_PERCENTAGE
     cx, cy = [c * nx, c * ny]
 
     a[Position].x -= a[Mass].inverted * cx
