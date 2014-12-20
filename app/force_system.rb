@@ -9,6 +9,8 @@ class ForceSystem < Stomp::System
   private
 
   def add_forces(entity)
+    entity[Force].x = 0
+    entity[Force].y = 0
     entity[ForceParts].parts.each do |part|
       next unless part
       x, y = part

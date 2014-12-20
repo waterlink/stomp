@@ -28,6 +28,7 @@ DraggedByMouse = Stomp.component("DraggedByMouse")
 
 CollisionShape = Stomp.component("CollisionShape")
 CircleShape = Stomp.component("CircleShape", :x, :y, :r)
+AabbShape = Stomp.component("AabbShape", :min_x, :min_y, :max_x, :max_y)
 Restitution = Stomp.component("Restitution", :value)
 
 PlanetSurface = Stomp.component("PlanetSurface")

@@ -1,6 +1,9 @@
 class CollisionSystem < Stomp::System
-  DEFAULT_RESTITUTION = 0.8
+  DEFAULT_RESTITUTION = 0.9
   DEFAULT_MASS = 5
+
+  POSITIONAL_CORRECTION_PERCENTAGE = 0.8
+  POSITIONAL_CORRECTION_SLOP = 0.999999
 
   def update
     Stomp::Component.each_entity(CollisionShape) do |entity|
@@ -18,13 +21,64 @@ class CollisionSystem < Stomp::System
   end
 
   def collision_normal(a, b)
-    circle_vs_circle(a, b)
+    return unless a[Position] && b[Position]
+    normalize(circle_vs_circle(a, b) ||
+              aabb_vs_circle(a, b))
+  end
+
+  # returns [normal_x, normal_y, penetration]
+  def aabb_vs_circle(a, b)
+    return unless a[AabbShape] && b[CircleShape]
+
+    nx, ny = [b[Position].x - a[Position].x,
+              b[Position].y - a[Position].y]
+
+    cx, cy = [nx, ny]
+
+    ex, ey = [(a[AabbShape].max_x - a[AabbShape].min_x) / 2.0,
+              (a[AabbShape].max_y - a[AabbShape].min_y) / 2.0]
+
+    cx, cy = [clamp(cx, -ex, ex),
+              clamp(cy, -ey, ey)]
+
+    inside = false
+
+    if [nx, ny] == [cx, cy]
+      inside = true
+
+      if nx.abs < ny.abs
+        cx = cx > 0 ? ex : -ex
+      else
+        cy = cy > 0 ? ey : -ey
+      end
+    end
+
+    norm_x, norm_y = [nx - cx,
+                      ny - cy]
+
+    d = norm_x ** 2 + norm_y ** 2
+    r = b[CircleShape].r
+
+    return if d > r ** 2 && !inside
+
+    d = Math.sqrt(d)
+
+    if inside
+      [-norm_x, -norm_y, r + d]
+    else
+      [norm_x, norm_y, r - d]
+    end
+  end
+
+  def clamp(x, min_x, max_x)
+    return min_x if x < min_x
+    return max_x if x > max_x
+    x
   end
 
   # returns [normal_x, normal_y, penetration]
   def circle_vs_circle(a, b)
     return unless a[CircleShape] && b[CircleShape]
-    return unless a[Position] && b[Position]
 
     nx, ny = [b[Position].x - a[Position].x,
               b[Position].y - a[Position].y]
@@ -43,6 +97,13 @@ class CollisionSystem < Stomp::System
     end
   end
 
+  def normalize(a)
+    return unless a
+    x, y, *other = a
+    r = Math.sqrt(x ** 2 + y ** 2)
+    [x / r, y / r, *other]
+  end
+
   def impulse_resolution(normal, a, b)
     return unless normal
 
@@ -55,8 +116,8 @@ class CollisionSystem < Stomp::System
     a[Mass] ||= Mass[DEFAULT_MASS]
     b[Mass] ||= Mass[DEFAULT_MASS]
 
-    a[Mass].inverted ||= 1.0 / a[Mass].value
-    b[Mass].inverted ||= 1.0 / b[Mass].value
+    a[Mass].inverted ||= a[Mass].value == 0 ? 0 : 1.0 / a[Mass].value
+    b[Mass].inverted ||= b[Mass].value == 0 ? 0 : 1.0 / b[Mass].value
 
     # relative velocity
     rvx, rvy = [b[Velocity].x - a[Velocity].y,
@@ -87,5 +148,21 @@ class CollisionSystem < Stomp::System
 
     b[Velocity].x += b[Mass].inverted * ix
     b[Velocity].y += b[Mass].inverted * iy
+
+    positional_correction(normal, a, b)
+  end
+
+  def positional_correction(normal, a, b)
+    nx, ny, penetration = normal
+
+    inv_mass = a[Mass].inverted + b[Mass].inverted
+    c = [penetration * POSITIONAL_CORRECTION_SLOP, 0].max / inv_mass * POSITIONAL_CORRECTION_PERCENTAGE
+    cx, cy = [c * nx, c * ny]
+
+    a[Position].x -= a[Mass].inverted * cx
+    a[Position].y -= a[Mass].inverted * cy
+
+    b[Position].x += b[Mass].inverted * cx
+    b[Position].y += b[Mass].inverted * cy
   end
 end

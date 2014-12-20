@@ -8,12 +8,17 @@ worlds:
           - type: Sprite
             value: "ground.png"
           - type: Position
-            values: [400, 575]
+            values: [400, 825]
           - type: Size
-            values: [1024, 50]
+            values: [1024, 500]
           - type: Mass
-            value: 500000
+            value: 0
           - type: PlanetSurface
+          - type: AabbShape
+            values: [-5120, -250, 5120, 250]
+          - type: CollisionShape
+          - type: Restitution
+            value: 100
 
       - name: "Ball 1"
         components:

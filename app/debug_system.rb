@@ -17,7 +17,10 @@ class DebugSystem < Stomp::System
     draw_vectors(Position, Velocity, Gosu::Color::GREEN, Gosu::Color::RED, 20)
     draw_vectors(Position, Acceleration, Gosu::Color::BLUE, Gosu::Color::YELLOW, 50)
     draw_circles(Position, CircleShape, Gosu::Color::WHITE)
+    draw_aabbs(Position, AabbShape, Gosu::Color::WHITE)
   end
+
+  private
 
   def draw_vectors(origin, vector, color_a, color_b, scale)
     Stomp::Component.each_entity(vector) do |entity|
@@ -44,7 +47,28 @@ class DebugSystem < Stomp::System
     end
   end
 
-  private
+  def draw_aabbs(origin, shape, color)
+    Stomp::Component.each_entity(shape) do |entity|
+      next unless entity[origin]
+      draw_aabb(entity[origin], entity[shape], color)
+    end
+  end
+
+  def draw_aabb(origin, shape, color)
+    [[shape.min_x, shape.min_y],
+     [shape.max_x, shape.min_y],
+     [shape.max_x, shape.max_y],
+     [shape.min_x, shape.max_y],
+     [shape.min_x, shape.min_y]].each_cons(2) do |(x1, y1), (x2, y2)|
+      window.draw_line(origin.x + x1,
+                       origin.y + y1,
+                       color,
+                       origin.x + x2,
+                       origin.y + y2,
+                       color,
+                       DEBUG_Z)
+    end
+  end
 
   def got(name, with: [])
     Stomp.logger.debug "event #{name}#{with}"
