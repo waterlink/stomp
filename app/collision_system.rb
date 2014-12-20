@@ -1,5 +1,5 @@
 class CollisionSystem < Stomp::System
-  DEFAULT_RESTITUTION = 0.9
+  DEFAULT_RESTITUTION = 1.0
   DEFAULT_MASS = 5
   DEFAULT_STATIC_FRICTION = 0.7
   DEFAULT_DYNAMIC_FRICTION = 0.3
@@ -159,7 +159,6 @@ class CollisionSystem < Stomp::System
   end
 
   def apply_friction(normal, a, b, j)
-    puts normal.inspect
     a[StaticFriction] ||= StaticFriction[DEFAULT_STATIC_FRICTION]
     a[DynamicFriction] ||= DynamicFriction[DEFAULT_DYNAMIC_FRICTION]
 
@@ -195,8 +194,6 @@ class CollisionSystem < Stomp::System
 
   def positional_correction(normal, a, b)
     nx, ny, penetration = normal
-
-    puts normal.inspect
 
     inv_mass = a[Mass].inverted + b[Mass].inverted
     c = [1.0 * penetration * POSITIONAL_CORRECTION_SLOP, 0.0].max / inv_mass * POSITIONAL_CORRECTION_PERCENTAGE

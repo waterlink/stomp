@@ -20,6 +20,14 @@ worlds:
           - type: Restitution
             value: 100
 
+      - name: "Gak 1"
+        components:
+          - type: Fixed
+          - type: Position
+            values: [300, 125]
+          - type: Bond
+            values: [1, 175, 0.001]
+
       - name: "Ball 1"
         components:
           - type: Sprite
@@ -34,13 +42,23 @@ worlds:
           - type: CircleShape
             values: [0, 0, 32]
           - type: CollisionShape
+          - type: Bond
+            values: [1, 175, 1.5]
+
+      - name: "Gak 2"
+        components:
+          - type: Fixed
+          - type: Position
+            values: [374, 125]
+          - type: Bond
+            values: [2, 175, 0.001]
 
       - name: "Ball 2"
         components:
           - type: Sprite
             value: "ball.png"
           - type: Position
-            values: [364, 300]
+            values: [374, 300]
           - type: Size
             values: [64, 64]
           - type: DragByMouse
@@ -49,13 +67,23 @@ worlds:
           - type: CircleShape
             values: [0, 0, 32]
           - type: CollisionShape
+          - type: Bond
+            values: [2, 175, 1.5]
+
+      - name: "Gak 3"
+        components:
+          - type: Fixed
+          - type: Position
+            values: [448, 125]
+          - type: Bond
+            values: [3, 175, 0.001]
 
       - name: "Ball 3"
         components:
           - type: Sprite
             value: "ball.png"
           - type: Position
-            values: [428, 300]
+            values: [448, 300]
           - type: Size
             values: [64, 64]
           - type: DragByMouse
@@ -64,13 +92,23 @@ worlds:
           - type: CircleShape
             values: [0, 0, 32]
           - type: CollisionShape
+          - type: Bond
+            values: [3, 175, 1.5]
+
+      - name: "Gak 4"
+        components:
+          - type: Fixed
+          - type: Position
+            values: [522, 125]
+          - type: Bond
+            values: [4, 175, 0.001]
 
       - name: "Ball 4"
         components:
           - type: Sprite
             value: "ball.png"
           - type: Position
-            values: [492, 300]
+            values: [522, 300]
           - type: Size
             values: [64, 64]
           - type: DragByMouse
@@ -79,13 +117,23 @@ worlds:
           - type: CircleShape
             values: [0, 0, 32]
           - type: CollisionShape
+          - type: Bond
+            values: [4, 175, 1.5]
+
+      - name: "Gak 5"
+        components:
+          - type: Fixed
+          - type: Position
+            values: [596, 125]
+          - type: Bond
+            values: [5, 175, 0.001]
 
       - name: "Ball 5"
         components:
           - type: Sprite
             value: "ball.png"
           - type: Position
-            values: [556, 300]
+            values: [596, 300]
           - type: Size
             values: [64, 64]
           - type: DragByMouse
@@ -94,3 +142,5 @@ worlds:
           - type: CircleShape
             values: [0, 0, 32]
           - type: CollisionShape
+          - type: Bond
+            values: [5, 175, 1.5]

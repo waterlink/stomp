@@ -16,6 +16,7 @@ class DebugSystem < Stomp::System
   def draw
     draw_vectors(Position, Velocity, Gosu::Color::GREEN, Gosu::Color::RED, 20)
     draw_vectors(Position, Acceleration, Gosu::Color::BLUE, Gosu::Color::YELLOW, 50)
+    draw_forces(Gosu::Color::YELLOW, Gosu::Color::WHITE, 0.5)
     draw_circles(Position, CircleShape, Gosu::Color::WHITE)
     draw_aabbs(Position, AabbShape, Gosu::Color::WHITE)
   end
@@ -32,6 +33,22 @@ class DebugSystem < Stomp::System
                        entity[origin].y + entity[vector].y * scale,
                        color_b,
                        DEBUG_Z)
+    end
+  end
+
+  def draw_forces(color_a, color_b, scale)
+    Stomp::Component.each_entity(ForceParts) do |entity|
+      next unless entity[Position]
+      entity[ForceParts].parts.each do |part|
+        next unless part
+        window.draw_line(entity[Position].x,
+                         entity[Position].y,
+                         color_a,
+                         entity[Position].x + part[0] * scale,
+                         entity[Position].y + part[1] * scale,
+                         color_b,
+                         DEBUG_Z)
+      end
     end
   end
 

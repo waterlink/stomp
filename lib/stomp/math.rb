@@ -9,6 +9,21 @@ module Stomp
         ].all?
       end
 
+      def normalize_vector(v)
+        return unless v
+        x, y, *other = v
+        d = x ** 2 + y ** 2
+        return v if d == 0
+        d = ::Math.sqrt(d)
+        [x / d, y / d]
+      end
+
+      def sign(x)
+        return -1 if x < 0
+        return 1 if x > 0
+        0
+      end
+
     end
   end
 end

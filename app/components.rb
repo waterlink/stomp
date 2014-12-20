@@ -14,9 +14,14 @@ Acceleration = Stomp.component("Acceleration", :x, :y)
 
 Mass = Stomp.component("Mass", :value, :inverted)
 Force = Stomp.component("Force", :x, :y)
+
 ForceParts = Stomp.component("ForceParts", :parts)
 ForceParts::DRAG = 0
 ForceParts::GRAVITY = 1
+ForceParts::BOND = 2
+
+Bond = Stomp.component("Bond", :id, :length, :spring)
+Fixed = Stomp.component("Fixed")
 
 MouseArrow = Stomp.component("MouseArrow")
 

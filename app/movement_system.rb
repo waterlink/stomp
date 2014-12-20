@@ -21,14 +21,17 @@ class MovementSystem < Stomp::System
 
   def update_vector(dst_type, src_type)
     Stomp::Component.each_entity(src_type) do |entity|
+      next if entity[Fixed]
       entity[dst_type] ||= dst_type[0, 0]
       entity[dst_type].x += entity[src_type].x
       entity[dst_type].y += entity[src_type].y
+      puts "after update: #{entity[dst_type]}"
     end
   end
 
   def update_acceleration
     Stomp::Component.each_entity(Force) do |entity|
+      next if entity[Fixed]
       entity[Mass] ||= Mass[DEFAULT_MASS]
       entity[Acceleration] ||= Acceleration[]
       entity[Acceleration].x = entity[Force].x / entity[Mass].value
@@ -38,6 +41,7 @@ class MovementSystem < Stomp::System
 
   def lose_velocity
     Stomp::Component.each_entity(Velocity) do |entity|
+      next if entity[Fixed]
       entity[Velocity].x *= VELOCITY_LOSS
       entity[Velocity].y *= VELOCITY_LOSS
     end
