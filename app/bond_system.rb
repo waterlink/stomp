@@ -3,29 +3,69 @@ class BondSystem < Stomp::System
   THRESHOLD = 0.5
 
   POSITIONAL_CORRECTION_PERCENTAGE = 0.8
+  ALLOW_SLOP = 0.1
+
+  def self.[](*args)
+    @_instance ||= super
+  end
+
+  def self.instance
+    @_instance
+  end
 
   def update
-    Stomp::Component.each_entity(Bond) do |entity|
-      Stomp::Component.each_entity(Bond) do |other|
-        next if entity == other || entity[Bond].id != other[Bond].id
-        next unless entity[Position] && other[Position]
-        apply_force(entity, other)
-      end
+    handle_bond_links(BondThread, &method(:handle_threads))
+  end
+
+  def handle_bond_links(type, &blk)
+    Stomp::Component.each_entity(type) do |entity|
+      bond_link = entity[type]
+
+      blk[bond_link,
+          bond_with_id(bond_link.id1),
+          bond_with_id(bond_link.id2)]
+
+      blk[bond_link,
+          bond_with_id(bond_link.id2),
+          bond_with_id(bond_link.id1)]
     end
   end
 
   private
 
-  def apply_force(entity, other)
+  def bond_with_id(id)
+    invalidate_bond(id)
+    bonds[id] ||= fetch_bond(id)
+    bonds[id] && bonds[id].entity
+  end
+
+  def bonds
+    @_bonds ||= {}
+    @_bonds[Stomp::World.active_world] ||= {}
+  end
+
+  def invalidate_bond(id)
+    return if bonds[id] && bonds[id].entity
+    bonds[id] = nil
+  end
+
+  def fetch_bond(id)
+    Stomp::Component.each_entity(Bond) do |entity|
+      return entity[Bond] if entity[Bond].id == id
+    end
+    nil
+  end
+
+  def handle_threads(bond, entity, other)
+    return unless bond && entity && other
+
     entity[ForceParts] ||= ForceParts[[]]
     entity[Force] ||= Force[0, 0]
 
     bx, by = entity[ForceParts].parts[ForceParts::BOND] ||= [0, 0]
 
-    bond = entity[Bond]
-
-    vx, vy = [entity[Position].x - other[Position].x,
-              entity[Position].y - other[Position].y]
+    vx, vy = [entity[Position].x + entity[Bond].x - other[Position].x - other[Bond].x,
+              entity[Position].y + entity[Bond].y - other[Position].y - other[Bond].y]
 
     d = Math.sqrt(vx ** 2 + vy ** 2)
 
@@ -54,7 +94,7 @@ class BondSystem < Stomp::System
 
   def fix_position(entity, nx, ny, d, bond)
     return if entity[Fixed]
-    tension = d - bond.length
+    tension = [d - bond.length * (1 + ALLOW_SLOP), 0].max
     c = 1.0 * tension * POSITIONAL_CORRECTION_PERCENTAGE
     cx, cy = [c * nx, c * ny]
 

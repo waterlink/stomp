@@ -19,6 +19,10 @@ class DebugSystem < Stomp::System
     draw_forces(Gosu::Color::YELLOW, Gosu::Color::WHITE, 0.5)
     draw_circles(Position, CircleShape, Gosu::Color::WHITE)
     draw_aabbs(Position, AabbShape, Gosu::Color::WHITE)
+
+    if defined?(BondSystem) && BondSystem.instance
+      BondSystem.instance.handle_bond_links(BondThread) { |_, a, b| draw_thread(a, b) }
+    end
   end
 
   private
@@ -85,6 +89,22 @@ class DebugSystem < Stomp::System
                        color,
                        DEBUG_Z)
     end
+  end
+
+  def draw_thread(a, b)
+    origin = Position
+    vector = Bond
+    color_b = color_a = Gosu::Color::WHITE
+
+    puts "draw_thread#{[a[Bond], b[Bond]]}"
+
+    window.draw_line(a[origin].x + a[vector].x,
+                     a[origin].y + a[vector].y,
+                     color_a,
+                     b[origin].x + b[vector].x,
+                     b[origin].y + b[vector].y,
+                     color_b,
+                     DEBUG_Z)
   end
 
   def got(name, with: [])

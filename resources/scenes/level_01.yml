@@ -20,130 +20,155 @@ worlds:
           - type: Restitution
             value: 100
 
-      #- name: "Gak 1"
-      #  components:
-      #    - type: Fixed
-      #    - type: Position
-      #      values: [300, 125]
-      #    - type: Bond
-      #      values: [1, 175, 0.001]
+      - name: "Gak 1"
+        components:
+          - type: Fixed
+          - type: Position
+            values: [300, 125]
+          - type: Bond
+            values: [1, 0, 0]
 
-      #- name: "Ball 1"
-      #  components:
-      #    - type: Sprite
-      #      value: "ball.png"
-      #    - type: Position
-      #      values: [300, 300]
-      #    - type: Size
-      #      values: [64, 64]
-      #    - type: DragByMouse
-      #    - type: Mass
-      #      value: 15
-      #    - type: CircleShape
-      #      values: [0, 0, 32]
-      #    - type: CollisionShape
-      #    - type: Bond
-      #      values: [1, 175, 1.5]
+      - name: "Thread 1"
+        components:
+          - type: BondThread
+            values: [1, 2, 175, 1.5]
 
-      #- name: "Gak 2"
-      #  components:
-      #    - type: Fixed
-      #    - type: Position
-      #      values: [365, 125]
-      #    - type: Bond
-      #      values: [2, 175, 0.001]
+      - name: "Ball 1"
+        components:
+          - type: Sprite
+            value: "ball.png"
+          - type: Position
+            values: [300, 300]
+          - type: Size
+            values: [64, 64]
+          - type: DragByMouse
+          - type: Mass
+            value: 15
+          - type: CircleShape
+            values: [0, 0, 32]
+          - type: CollisionShape
+          - type: Bond
+            values: [2, 0, -32]
 
-      #- name: "Ball 2"
-      #  components:
-      #    - type: Sprite
-      #      value: "ball.png"
-      #    - type: Position
-      #      values: [365, 300]
-      #    - type: Size
-      #      values: [64, 64]
-      #    - type: DragByMouse
-      #    - type: Mass
-      #      value: 15
-      #    - type: CircleShape
-      #      values: [0, 0, 32]
-      #    - type: CollisionShape
-      #    - type: Bond
-      #      values: [2, 175, 1.5]
+      - name: "Gak 2"
+        components:
+          - type: Fixed
+          - type: Position
+            values: [365, 125]
+          - type: Bond
+            values: [3, 0, 0]
 
-      #- name: "Gak 3"
-      #  components:
-      #    - type: Fixed
-      #    - type: Position
-      #      values: [430, 125]
-      #    - type: Bond
-      #      values: [3, 175, 0.001]
+      - name: "Ball 2"
+        components:
+          - type: Sprite
+            value: "ball.png"
+          - type: Position
+            values: [365, 300]
+          - type: Size
+            values: [64, 64]
+          - type: DragByMouse
+          - type: Mass
+            value: 15
+          - type: CircleShape
+            values: [0, 0, 32]
+          - type: CollisionShape
+          - type: Bond
+            values: [4, 0, -32]
 
-      #- name: "Ball 3"
-      #  components:
-      #    - type: Sprite
-      #      value: "ball.png"
-      #    - type: Position
-      #      values: [430, 300]
-      #    - type: Size
-      #      values: [64, 64]
-      #    - type: DragByMouse
-      #    - type: Mass
-      #      value: 15
-      #    - type: CircleShape
-      #      values: [0, 0, 32]
-      #    - type: CollisionShape
-      #    - type: Bond
-      #      values: [3, 175, 1.5]
+      - name: "Thread 2"
+        components:
+          - type: BondThread
+            values: [3, 4, 175, 1.5]
 
-      #- name: "Gak 4"
-      #  components:
-      #    - type: Fixed
-      #    - type: Position
-      #      values: [495, 125]
-      #    - type: Bond
-      #      values: [4, 175, 0.001]
+      - name: "Gak 3"
+        components:
+          - type: Fixed
+          - type: Position
+            values: [430, 125]
+          - type: Bond
+            values: [5, 0, 0]
 
-      #- name: "Ball 4"
-      #  components:
-      #    - type: Sprite
-      #      value: "ball.png"
-      #    - type: Position
-      #      values: [495, 300]
-      #    - type: Size
-      #      values: [64, 64]
-      #    - type: DragByMouse
-      #    - type: Mass
-      #      value: 15
-      #    - type: CircleShape
-      #      values: [0, 0, 32]
-      #    - type: CollisionShape
-      #    - type: Bond
-      #      values: [4, 175, 1.5]
+      - name: "Ball 3"
+        components:
+          - type: Sprite
+            value: "ball.png"
+          - type: Position
+            values: [430, 300]
+          - type: Size
+            values: [64, 64]
+          - type: DragByMouse
+          - type: Mass
+            value: 15
+          - type: CircleShape
+            values: [0, 0, 32]
+          - type: CollisionShape
+          - type: Bond
+            values: [6, 0, -32]
 
-      #- name: "Gak 5"
-      #  components:
-      #    - type: Fixed
-      #    - type: Position
-      #      values: [560, 125]
-      #    - type: Bond
-      #      values: [5, 175, 0.001]
+      - name: "Thread 3"
+        components:
+          - type: BondThread
+            values: [5, 6, 175, 1.5]
 
-      #- name: "Ball 5"
-      #  components:
-      #    - type: Sprite
-      #      value: "ball.png"
-      #    - type: Position
-      #      values: [560, 300]
-      #    - type: Size
-      #      values: [64, 64]
-      #    - type: DragByMouse
-      #    - type: Mass
-      #      value: 15
-      #    - type: CircleShape
-      #      values: [0, 0, 32]
-      #    - type: CollisionShape
-      #    - type: Bond
-      #      values: [5, 175, 1.5]
+      - name: "Gak 4"
+        components:
+          - type: Fixed
+          - type: Position
+            values: [495, 125]
+          - type: Bond
+            values: [7, 0, 0]
+
+      - name: "Ball 4"
+        components:
+          - type: Sprite
+            value: "ball.png"
+          - type: Position
+            values: [495, 300]
+          - type: Size
+            values: [64, 64]
+          - type: DragByMouse
+          - type: Mass
+            value: 15
+          - type: CircleShape
+            values: [0, 0, 32]
+          - type: CollisionShape
+          - type: Bond
+            values: [8, 0, -32]
+
+      - name: "Thread 4"
+        components:
+          - type: BondThread
+            values: [7, 8, 175, 1.5]
+
+      - name: "Gak 5"
+        components:
+          - type: Fixed
+          - type: Position
+            values: [560, 125]
+          - type: Bond
+            values: [9, 0, 0]
+
+      - name: "Ball 5"
+        components:
+          - type: Sprite
+            value: "ball.png"
+          - type: Position
+            values: [560, 300]
+          - type: Size
+            values: [64, 64]
+          - type: DragByMouse
+          - type: Mass
+            value: 15
+          - type: CircleShape
+            values: [0, 0, 32]
+          - type: CollisionShape
+          - type: Bond
+            values: [10, 0, -32]
+
+      - name: "Thread 5"
+        components:
+          - type: BondThread
+            values: [9, 10, 175, 1.5]
 
 
       - name: "Ball 6"
@@ -156,12 +181,12 @@ worlds:
             values: [64, 64]
           - type: DragByMouse
           - type: Mass
-            value: 10
+            value: 30
           - type: CircleShape
             values: [0, 0, 32]
           - type: CollisionShape
           - type: Bond
-            values: [6, 250, 1.5]
+            values: [11, 0, -32]
 
       - name: "Ball 7"
         components:
@@ -173,60 +198,65 @@ worlds:
             values: [64, 64]
           - type: DragByMouse
           - type: Mass
-            value: 10
+            value: 30
           - type: CircleShape
             values: [0, 0, 32]
           - type: CollisionShape
           - type: Bond
-            values: [6, 250, 1.5]
+            values: [12, 0, 32]
 
-      - name: "Ball 8"
+      - name: "Thread 6"
         components:
-          - type: Sprite
-            value: "ball.png"
-          - type: Position
-            values: [300, 400]
-          - type: Size
-            values: [64, 64]
-          - type: DragByMouse
-          - type: Mass
-            value: 10
-          - type: CircleShape
-            values: [0, 0, 32]
-          - type: CollisionShape
-          - type: Bond
-            values: [6, 250, 1.5]
+          - type: BondThread
+            values: [11, 12, 175, 1.5]
 
-      - name: "Ball 9"
-        components:
-          - type: Sprite
-            value: "ball.png"
-          - type: Position
-            values: [300, 400]
-          - type: Size
-            values: [64, 64]
-          - type: DragByMouse
-          - type: Mass
-            value: 10
-          - type: CircleShape
-            values: [0, 0, 32]
-          - type: CollisionShape
-          - type: Bond
-            values: [6, 250, 1.5]
+      #- name: "Ball 8"
+      #  components:
+      #    - type: Sprite
+      #      value: "ball.png"
+      #    - type: Position
+      #      values: [300, 400]
+      #    - type: Size
+      #      values: [64, 64]
+      #    - type: DragByMouse
+      #    - type: Mass
+      #      value: 10
+      #    - type: CircleShape
+      #      values: [0, 0, 32]
+      #    - type: CollisionShape
+      #    - type: Bond
+      #      values: [6, 250, 1.5]
 
-      - name: "Ball 10"
-        components:
-          - type: Sprite
-            value: "ball.png"
-          - type: Position
-            values: [300, 400]
-          - type: Size
-            values: [64, 64]
-          - type: DragByMouse
-          - type: Mass
-            value: 10
-          - type: CircleShape
-            values: [0, 0, 32]
-          - type: CollisionShape
-          - type: Bond
-            values: [6, 250, 1.5]
+      #- name: "Ball 9"
+      #  components:
+      #    - type: Sprite
+      #      value: "ball.png"
+      #    - type: Position
+      #      values: [300, 400]
+      #    - type: Size
+      #      values: [64, 64]
+      #    - type: DragByMouse
+      #    - type: Mass
+      #      value: 10
+      #    - type: CircleShape
+      #      values: [0, 0, 32]
+      #    - type: CollisionShape
+      #    - type: Bond
+      #      values: [6, 250, 1.5]
+
+      #- name: "Ball 10"
+      #  components:
+      #    - type: Sprite
+      #      value: "ball.png"
+      #    - type: Position
+      #      values: [300, 400]
+      #    - type: Size
+      #      values: [64, 64]
+      #    - type: DragByMouse
+      #    - type: Mass
+      #      value: 10
+      #    - type: CircleShape
+      #      values: [0, 0, 32]
+      #    - type: CollisionShape
+      #    - type: Bond
+      #      values: [6, 250, 1.5]

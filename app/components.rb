@@ -20,7 +20,8 @@ ForceParts::DRAG = 0
 ForceParts::GRAVITY = 1
 ForceParts::BOND = 2
 
-Bond = Stomp.component("Bond", :id, :length, :spring)
+Bond = Stomp.component("Bond", :id, :x, :y)
+BondThread = Stomp.component("BondThread", :id1, :id2, :length, :power)
 Fixed = Stomp.component("Fixed")
 
 MouseArrow = Stomp.component("MouseArrow")

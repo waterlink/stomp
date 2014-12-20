@@ -25,7 +25,6 @@ class MovementSystem < Stomp::System
       entity[dst_type] ||= dst_type[0, 0]
       entity[dst_type].x += entity[src_type].x
       entity[dst_type].y += entity[src_type].y
-      puts "after update: #{entity[dst_type]}"
     end
   end
 

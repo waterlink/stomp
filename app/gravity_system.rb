@@ -1,5 +1,5 @@
 class GravitySystem < Stomp::System
-  G = 1.86
+  G = 1.96
 
   def update
     Stomp::Component.each_entity(Mass) do |entity|
