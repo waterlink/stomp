@@ -13,5 +13,6 @@
   - exit_system
   - scene_system
   - drag_system
+  - movement_system
 
   #- debug_system

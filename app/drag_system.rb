@@ -14,15 +14,17 @@ class DragSystem < Stomp::System
   def mouse_click(id, x, y)
     Stomp::Component.each_entity(DraggedByMouse) do |entity|
       entity.remove(DraggedByMouse)
+      entity.remove(Force)
     end
   end
 
   private
 
   def move(entity, x, y)
-    entity[Position] ||= Position[]
-    entity[Position].x = x
-    entity[Position].y = y
+    entity[Position] ||= Position[0, 0]
+    entity[Force] ||= Force[]
+    entity[Force].x = x - entity[Position].x
+    entity[Force].y = y - entity[Position].y
   end
 
   def start_dragging(entity, x, y)

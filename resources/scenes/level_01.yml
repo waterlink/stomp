@@ -12,6 +12,8 @@ worlds:
           - type: Size
             values: [64, 64]
           - type: DragByMouse
+          - type: Mass
+            value: 1
 
       - name: "Ball 2"
         components:
@@ -21,6 +23,9 @@ worlds:
             values: [364, 300]
           - type: Size
             values: [64, 64]
+          - type: DragByMouse
+          - type: Mass
+            value: 5
 
       - name: "Ball 3"
         components:
@@ -30,6 +35,9 @@ worlds:
             values: [428, 300]
           - type: Size
             values: [64, 64]
+          - type: DragByMouse
+          - type: Mass
+            value: 10
 
       - name: "Ball 4"
         components:
@@ -39,6 +47,9 @@ worlds:
             values: [492, 300]
           - type: Size
             values: [64, 64]
+          - type: DragByMouse
+          - type: Mass
+            value: 50
 
       - name: "Ball 5"
         components:
@@ -48,3 +59,6 @@ worlds:
             values: [556, 300]
           - type: Size
             values: [64, 64]
+          - type: DragByMouse
+          - type: Mass
+            value: 500
