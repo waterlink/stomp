@@ -41,10 +41,6 @@ class BondSystem < Stomp::System
 
     tforce = nx * fx + ny * fy
 
-    if bond.length < d
-      tforce += (bond.spring - 1) * (d - bond.length)
-    end
-
     if tforce < 0
       entity[ForceParts].parts[ForceParts::BOND] = [0, 0]
       fix_position(entity, nx, ny, d, bond)
@@ -58,7 +54,6 @@ class BondSystem < Stomp::System
 
   def fix_position(entity, nx, ny, d, bond)
     return if entity[Fixed]
-    puts "fix_position#{[entity, nx, ny, d, bond]}"
     tension = d - bond.length
     c = 1.0 * tension * POSITIONAL_CORRECTION_PERCENTAGE
     cx, cy = [c * nx, c * ny]
