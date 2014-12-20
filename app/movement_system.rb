@@ -1,6 +1,6 @@
 class MovementSystem < Stomp::System
   DEFAULT_MASS = 5
-  VELOCITY_LOSS = 0.95
+  VELOCITY_LOSS = 0.97
 
   def update
     update_acceleration

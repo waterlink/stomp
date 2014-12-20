@@ -27,6 +27,7 @@ end
   entity
   world
   math
+  draw
 ).each do |part|
   require "stomp/#{part}"
 end

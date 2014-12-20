@@ -14,5 +14,8 @@
   - scene_system
   - drag_system
   - movement_system
+  - collision_system
+  - gravity_system
+  - force_system
 
-  #- debug_system
+  - debug_system

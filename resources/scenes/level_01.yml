@@ -3,6 +3,18 @@ worlds:
   - name: "Level 1"
     entities:
 
+      - name: "Ground"
+        components:
+          - type: Sprite
+            value: "ground.png"
+          - type: Position
+            values: [400, 575]
+          - type: Size
+            values: [1024, 50]
+          - type: Mass
+            value: 500000
+          - type: PlanetSurface
+
       - name: "Ball 1"
         components:
           - type: Sprite
@@ -13,7 +25,10 @@ worlds:
             values: [64, 64]
           - type: DragByMouse
           - type: Mass
-            value: 1
+            value: 50
+          - type: CircleShape
+            values: [0, 0, 32]
+          - type: CollisionShape
 
       - name: "Ball 2"
         components:
@@ -25,7 +40,10 @@ worlds:
             values: [64, 64]
           - type: DragByMouse
           - type: Mass
-            value: 5
+            value: 50
+          - type: CircleShape
+            values: [0, 0, 32]
+          - type: CollisionShape
 
       - name: "Ball 3"
         components:
@@ -37,7 +55,10 @@ worlds:
             values: [64, 64]
           - type: DragByMouse
           - type: Mass
-            value: 10
+            value: 50
+          - type: CircleShape
+            values: [0, 0, 32]
+          - type: CollisionShape
 
       - name: "Ball 4"
         components:
@@ -50,6 +71,9 @@ worlds:
           - type: DragByMouse
           - type: Mass
             value: 50
+          - type: CircleShape
+            values: [0, 0, 32]
+          - type: CollisionShape
 
       - name: "Ball 5"
         components:
@@ -61,4 +85,7 @@ worlds:
             values: [64, 64]
           - type: DragByMouse
           - type: Mass
-            value: 500
+            value: 50
+          - type: CircleShape
+            values: [0, 0, 32]
+          - type: CollisionShape
