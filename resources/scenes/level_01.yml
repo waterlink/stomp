@@ -219,29 +219,34 @@ worlds:
           - type: CircleShape
             values: [0, 0, 0.32]
           - type: CollisionShape
+          - type: Restitution
+            value: 0.1
+          - type: Bond
+            values: [13, 0, 0.32]
 
+      - name: "Ball 7+"
+        components:
+          - type: Sprite
+            value: "ball.png"
+          - type: Position
+            values: [14.25, 5]
+          - type: Size
+            values: [0.64, 0.64]
+          - type: DragByMouse
+          - type: Mass
+            value: 0.1
+          - type: CircleShape
+            values: [0, 0, 0.32]
+          - type: CollisionShape
+          - type: Restitution
+            value: 0.4
+          - type: Bond
+            values: [14, 0, 0.32]
 
-      #- name: "Ball 7"
-      #  components:
-      #    - type: Sprite
-      #      value: "ball.png"
-      #    - type: Position
-      #      values: [200, 400]
-      #    - type: Size
-      #      values: [64, 64]
-      #    - type: DragByMouse
-      #    - type: Mass
-      #      value: 30
-      #    - type: CircleShape
-      #      values: [0, 0, 32]
-      #    - type: CollisionShape
-      #    - type: Bond
-      #      values: [12, 0, 32]
-#
-#      - name: "Thread 6"
-#        components:
-#          - type: BondThread
-#            values: [11, 12, 175, 1.5]
+      - name: "Thread 7+"
+        components:
+          - type: BondThread
+            values: [13, 14, 3, 1.5]
 
       #- name: "Ball 8"
       #  components:

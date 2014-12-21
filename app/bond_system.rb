@@ -2,8 +2,8 @@ class BondSystem < Stomp::System
   BOND_FORCE_CAP = 500
   THRESHOLD = 0.5
 
-  POSITIONAL_CORRECTION_PERCENTAGE = 1
-  VELOCITY_CORRECTION_PERCENTAGE = 1
+  POSITIONAL_CORRECTION_PERCENTAGE = 0.5
+  VELOCITY_CORRECTION_PERCENTAGE = 0.5
   ALLOW_SLOP = 0
 
   def self.[](*args)
@@ -60,8 +60,14 @@ class BondSystem < Stomp::System
   def handle_threads(bond, entity, other, _fix_position: true)
     return unless bond && entity && other
 
+    return if entity[Fixed] && other[Fixed]
+    return handle_threads(bond, other, entity, _fix_position: _fix_position) if entity[Fixed]
+
     entity[ForceParts] ||= ForceParts[[]]
     entity[Force] ||= Force[0, 0]
+
+    other[ForceParts] ||= ForceParts[[]]
+    other[Force] ||= Force[0, 0]
 
     bx, by = entity[ForceParts].parts[ForceParts::BOND] ||= [0, 0]
 
@@ -77,26 +83,37 @@ class BondSystem < Stomp::System
 
     nx, ny = Stomp::Math.normalize_vector([vx, vy])
 
-    if _fix_position
+    if d < bond.length
+      return
+    end
+
+    if _fix_position && other[Fixed]
       fix_position(entity, nx, ny, d, bond)
       handle_threads(bond, entity, other, _fix_position: false)
+      return
     end
 
     force = entity[Force]
-    fx, fy = [force.x - bx, force.y - by]
+    other_force = other[Force]
+    fx, fy = [force.x - bx - other_force.x, force.y - by - other_force.y]
 
     tforce = nx * fx + ny * fy
 
-    #if tforce < 0
-    #  entity[ForceParts].parts[ForceParts::BOND] = [0, 0]
-    #  #fix_position(entity, nx, ny, d, bond)
-    #  return
-    #end
+    if tforce < 0
+      entity[ForceParts].parts[ForceParts::BOND] = [0, 0]
+      fix_position(entity, nx, ny, d, bond)
+      return
+    end
 
-    entity[ForceParts].parts[ForceParts::BOND] = [-tforce * nx, -tforce * ny]
+    entity[ForceParts].parts[ForceParts::BOND] = [-0.5 * tforce * nx, -0.5 * tforce * ny]
+    other[ForceParts].parts[ForceParts::BOND] = [0.5 * tforce * nx, 0.5 * tforce * ny]
+
+    if _fix_position
+      fix_position(entity, nx, ny, d, bond, fix_velocity: false)
+    end
   end
 
-  def fix_position(entity, nx, ny, d, bond)
+  def fix_position(entity, nx, ny, d, bond, fix_velocity: true)
     return if entity[Fixed]
     entity[Velocity] ||= Velocity[0, 0]
 
@@ -107,9 +124,9 @@ class BondSystem < Stomp::System
     entity[Position].x -= cx
     entity[Position].y -= cy
 
+    return unless fix_velocity
     v = entity[Velocity].x * nx + entity[Velocity].y * ny
-
-    entity[Velocity].x -= v * nx
-    entity[Velocity].y -= v * ny
+    entity[Velocity].x -= v * nx * VELOCITY_CORRECTION_PERCENTAGE
+    entity[Velocity].y -= v * ny * VELOCITY_CORRECTION_PERCENTAGE
   end
 end
