@@ -76,11 +76,6 @@ class BondSystem < Stomp::System
 
     d = Math.sqrt(vx ** 2 + vy ** 2)
 
-    #if d < bond.length
-    #  entity[ForceParts].parts[ForceParts::BOND] = [0, 0]
-    #  return
-    #end
-
     nx, ny = Stomp::Math.normalize_vector([vx, vy])
 
     if d < bond.length
@@ -101,7 +96,10 @@ class BondSystem < Stomp::System
 
     if tforce < 0
       entity[ForceParts].parts[ForceParts::BOND] = [0, 0]
-      fix_position(entity, nx, ny, d, bond)
+      if _fix_position
+        fix_position(entity, nx, ny, d, bond)
+        handle_threads(bond, entity, other, _fix_position: false)
+      end
       return
     end
 
@@ -110,6 +108,7 @@ class BondSystem < Stomp::System
 
     if _fix_position
       fix_position(entity, nx, ny, d, bond, fix_velocity: false)
+      handle_threads(bond, entity, other, _fix_position: false)
     end
   end
 
