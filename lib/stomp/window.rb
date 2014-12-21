@@ -2,6 +2,7 @@ module Stomp
   class Window < Gosu::Window
     FPS = 100
     DT = 1.0 / FPS
+    MAX_PASSED_TIME = 0.3
 
     def initialize
       super(width, height, fullscreen?)
@@ -55,7 +56,7 @@ module Stomp
 
     def time_passed
       return unless previous_now
-      @_time_passed ||= now - previous_now
+      @_time_passed ||= [now - previous_now, MAX_PASSED_TIME].max
     end
 
     def reset_time_passed
