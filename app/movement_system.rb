@@ -1,15 +1,17 @@
 class MovementSystem < Stomp::System
   DEFAULT_MASS = 5
-  VELOCITY_LOSS = 0.97
+  VELOCITY_LOSS = 0.998
 
   FPS = 100
   DT = 1.0 / FPS
 
   def update(dt)
+    #debug_info(dt)
     update_acceleration(dt)
     update_velocity(dt)
-    #lose_velocity(dt)
+    lose_velocity(dt)
     update_position(dt)
+    @_tick = tick + 1
   end
 
   private
@@ -47,6 +49,24 @@ class MovementSystem < Stomp::System
       entity[Velocity].x *= velocity_loss_for(dt)
       entity[Velocity].y *= velocity_loss_for(dt)
     end
+  end
+
+  def debug_info(dt)
+    Stomp::Component.each_entity(Velocity) do |e|
+      next if e[Fixed]
+      e[Acceleration] ||= Acceleration[0, 0]
+      e[Force] ||= Force[0, 0]
+      e[Mass] ||= Mass[DEFAULT_MASS]
+
+      if tick % 100 == 0
+        Stomp.logger.debug "entity#{[Time.now.to_i, dt, e.name, e[Position], e[Velocity], e[Acceleration], e[Force]]}"
+        Stomp.logger.debug "entity#{[e[ForceParts]]}"
+      end
+    end
+  end
+
+  def tick
+    @_tick ||= 0
   end
 
   def velocity_loss_for(dt)

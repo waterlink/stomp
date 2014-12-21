@@ -2,6 +2,8 @@ worlds:
   - name: "Main Menu"
     zoom: 1
     origin: [0, 0]
+    axes: [1, 1]
+    gravity: 0
     entities:
 
       - name: "Main Menu"
@@ -48,6 +50,8 @@ worlds:
   - name: "Common"
     zoom: 1
     origin: [0, 0]
+    axes: [1, 1]
+    gravity: 0
     entities:
 
       - name: "Mouse Arrow"

@@ -2,8 +2,9 @@ class BondSystem < Stomp::System
   BOND_FORCE_CAP = 500
   THRESHOLD = 0.5
 
-  POSITIONAL_CORRECTION_PERCENTAGE = 0.8
-  ALLOW_SLOP = 0.1
+  POSITIONAL_CORRECTION_PERCENTAGE = 1
+  VELOCITY_CORRECTION_PERCENTAGE = 1
+  ALLOW_SLOP = 0
 
   def self.[](*args)
     @_instance ||= super
@@ -56,7 +57,7 @@ class BondSystem < Stomp::System
     nil
   end
 
-  def handle_threads(bond, entity, other)
+  def handle_threads(bond, entity, other, _fix_position: true)
     return unless bond && entity && other
 
     entity[ForceParts] ||= ForceParts[[]]
@@ -69,36 +70,46 @@ class BondSystem < Stomp::System
 
     d = Math.sqrt(vx ** 2 + vy ** 2)
 
-    if d < bond.length
-      entity[ForceParts].parts[ForceParts::BOND] = [0, 0]
-      return
-    end
+    #if d < bond.length
+    #  entity[ForceParts].parts[ForceParts::BOND] = [0, 0]
+    #  return
+    #end
 
     nx, ny = Stomp::Math.normalize_vector([vx, vy])
+
+    if _fix_position
+      fix_position(entity, nx, ny, d, bond)
+      handle_threads(bond, entity, other, _fix_position: false)
+    end
 
     force = entity[Force]
     fx, fy = [force.x - bx, force.y - by]
 
     tforce = nx * fx + ny * fy
 
-    if tforce < 0
-      entity[ForceParts].parts[ForceParts::BOND] = [0, 0]
-      fix_position(entity, nx, ny, d, bond)
-      return
-    end
+    #if tforce < 0
+    #  entity[ForceParts].parts[ForceParts::BOND] = [0, 0]
+    #  #fix_position(entity, nx, ny, d, bond)
+    #  return
+    #end
 
     entity[ForceParts].parts[ForceParts::BOND] = [-tforce * nx, -tforce * ny]
-
-    fix_position(entity, nx, ny, d, bond)
   end
 
   def fix_position(entity, nx, ny, d, bond)
     return if entity[Fixed]
-    tension = [d - bond.length * (1 + ALLOW_SLOP), 0].max
+    entity[Velocity] ||= Velocity[0, 0]
+
+    tension = d - bond.length * (1 + ALLOW_SLOP)
     c = 1.0 * tension * POSITIONAL_CORRECTION_PERCENTAGE
     cx, cy = [c * nx, c * ny]
 
     entity[Position].x -= cx
     entity[Position].y -= cy
+
+    v = entity[Velocity].x * nx + entity[Velocity].y * ny
+
+    entity[Velocity].x -= v * nx
+    entity[Velocity].y -= v * ny
   end
 end

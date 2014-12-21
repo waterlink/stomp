@@ -1,4 +1,7 @@
 class DragSystem < Stomp::System
+  DRAG_FORCE_BASE = 5.0
+  DEFAULT_MASS = 5
+
   def update(dt)
     Stomp::Component.each_entity(DraggedByMouse) do |entity|
       move(entity, window.mouse_x, window.mouse_y)
@@ -23,8 +26,14 @@ class DragSystem < Stomp::System
   def move(entity, x, y)
     entity[Position] ||= Position[0, 0]
     entity[ForceParts] ||= ForceParts[[]]
-    entity[ForceParts].parts[ForceParts::DRAG] = [x - entity[Position].x,
-                                                  y - entity[Position].y]
+    entity[Mass] ||= Mass[DEFAULT_MASS]
+
+    mx, my = world_mouse(x, y, Stomp::World.from_name(entity.world))
+
+    k = DRAG_FORCE_BASE * entity[Mass].value
+
+    entity[ForceParts].parts[ForceParts::DRAG] = [(mx - entity[Position].x) * k,
+                                                  (my - entity[Position].y) * k]
   end
 
   def start_dragging(entity, x, y)
@@ -35,10 +44,24 @@ class DragSystem < Stomp::System
   def inside_bounding_box?(x, y, entity)
     entity[Position] ||= Position[0, 0]
     entity[Size] ||= Size[0, 0]
-    _inside_bounding_box?(x, y, entity[Position], entity[Size])
+    _inside_bounding_box?(x, y,
+                          entity[Position], entity[Size],
+                          Stomp::World.from_name(entity.world))
   end
 
-  def _inside_bounding_box?(x, y, position, size)
-    Stomp::Math.inside_bounding_box?(x, y, position.x, position.y, size.x, size.y)
+  def _inside_bounding_box?(x, y, position, size, world)
+    mx, my = world_mouse(x, y, world)
+    Stomp::Math.inside_bounding_box?(mx, my,
+                                     position.x, position.y,
+                                     size.x, size.y)
+  end
+
+  def world_mouse(x, y, world)
+    ox, oy = world.origin
+    x_axis, y_axis = world.axes
+    zoom = 1.0 * world.zoom
+
+    [(x - ox) / zoom * x_axis,
+     (y - oy) / zoom * y_axis]
   end
 end

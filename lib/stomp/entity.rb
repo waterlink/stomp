@@ -27,6 +27,10 @@ module Stomp
       self
     end
 
+    def get_world
+      World.from_name(world)
+    end
+
     def []=(type, component)
       remove(type)
       register(type, component)

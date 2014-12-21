@@ -10,14 +10,45 @@ class SpriteSystem < Stomp::System
                   entity[Position].y,
                   entity[Size].x,
                   entity[Size].y,
-                  entity[LayerIndex].value)
+                  entity[LayerIndex].value,
+                  world_for(entity))
     end
   end
 
   private
 
-  def draw_sprite(path, x, y, w, h, layer)
-    sprite(path).draw(x - w / 2, y - h / 2, layer)
+  def world_for(entity)
+    Stomp::World.from_name(entity.world)
+  end
+
+  def draw_sprite(path, x, y, w, h, layer, world)
+    x_axis, y_axis = world.axes
+    ox, oy = world.origin
+    zoom = world.zoom
+
+    sized = w * h > 0
+
+    draw_image(path,
+               (x * x_axis - w / 2) * zoom + ox,
+               (y * y_axis - h / 2) * zoom + oy,
+               (x * x_axis + w / 2) * zoom + ox,
+               (y * y_axis + h / 2) * zoom + oy,
+               layer,
+               sized)
+  end
+
+  def draw_image(path, x1, y1, x2, y2, z, sized)
+    return draw_unsized_image(path, x1, y1, z) unless sized
+    color = Gosu::Color::WHITE
+    sprite(path).draw_as_quad(x1, y1, color,
+                              x2, y1, color,
+                              x2, y2, color,
+                              x1, y2, color,
+                              z)
+  end
+
+  def draw_unsized_image(path, x, y, z)
+    sprite(path).draw(x, y, z)
   end
 
   def sprite(path)

@@ -14,11 +14,11 @@ class DebugSystem < Stomp::System
   end
 
   def draw
-    draw_vectors(Position, Velocity, Gosu::Color::GREEN, Gosu::Color::RED, 20)
-    draw_vectors(Position, Acceleration, Gosu::Color::BLUE, Gosu::Color::YELLOW, 50)
-    draw_forces(Gosu::Color::YELLOW, Gosu::Color::WHITE, 0.5)
-    draw_circles(Position, CircleShape, Gosu::Color::WHITE)
-    draw_aabbs(Position, AabbShape, Gosu::Color::WHITE)
+    draw_vectors(Position, Velocity, Gosu::Color::GREEN, Gosu::Color::RED, 5)
+    draw_vectors(Position, Acceleration, Gosu::Color::BLUE, Gosu::Color::YELLOW, 1)
+    draw_forces(Gosu::Color::YELLOW, Gosu::Color::WHITE, 0.05)
+    #draw_circles(Position, CircleShape, Gosu::Color::WHITE)
+    #draw_aabbs(Position, AabbShape, Gosu::Color::WHITE)
 
     if defined?(BondSystem) && BondSystem.instance
       BondSystem.instance.handle_bond_links(BondThread) { |_, a, b| draw_thread(a, b) }
@@ -30,11 +30,13 @@ class DebugSystem < Stomp::System
   def draw_vectors(origin, vector, color_a, color_b, scale)
     Stomp::Component.each_entity(vector) do |entity|
       next unless entity[origin]
-      window.draw_line(entity[origin].x,
-                       entity[origin].y,
+      x, y = entity.get_world.position(entity[origin].x, entity[origin].y)
+      vx, vy = entity.get_world.relative_position(entity[vector].x, entity[vector].y)
+      window.draw_line(x,
+                       y,
                        color_a,
-                       entity[origin].x + entity[vector].x * scale,
-                       entity[origin].y + entity[vector].y * scale,
+                       x + vx * scale,
+                       y + vy * scale,
                        color_b,
                        DEBUG_Z)
     end
@@ -45,11 +47,13 @@ class DebugSystem < Stomp::System
       next unless entity[Position]
       entity[ForceParts].parts.each do |part|
         next unless part
-        window.draw_line(entity[Position].x,
-                         entity[Position].y,
+        x, y = entity.get_world.position(entity[Position].x, entity[Position].y)
+        dx, dy = entity.get_world.relative_position(part[0], part[1])
+        window.draw_line(x,
+                         y,
                          color_a,
-                         entity[Position].x + part[0] * scale,
-                         entity[Position].y + part[1] * scale,
+                         x + dx * scale,
+                         y + dy * scale,
                          color_b,
                          DEBUG_Z)
       end
@@ -96,11 +100,19 @@ class DebugSystem < Stomp::System
     vector = Bond
     color_b = color_a = Gosu::Color::WHITE
 
-    window.draw_line(a[origin].x + a[vector].x,
-                     a[origin].y + a[vector].y,
+    entity = a
+    ax, ay = entity.get_world
+      .position(entity[origin].x + entity[vector].x, entity[origin].y + entity[vector].y)
+
+    entity = b
+    bx, by = entity.get_world
+      .position(entity[origin].x + entity[vector].x, entity[origin].y + entity[vector].y)
+
+    window.draw_line(ax,
+                     ay,
                      color_a,
-                     b[origin].x + b[vector].x,
-                     b[origin].y + b[vector].y,
+                     bx,
+                     by,
                      color_b,
                      DEBUG_Z)
   end
