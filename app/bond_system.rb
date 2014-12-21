@@ -13,7 +13,7 @@ class BondSystem < Stomp::System
     @_instance
   end
 
-  def update
+  def update(dt)
     handle_bond_links(BondThread, &method(:handle_threads))
   end
 

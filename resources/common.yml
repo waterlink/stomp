@@ -1,5 +1,7 @@
 worlds:
   - name: "Main Menu"
+    zoom: 1
+    origin: [0, 0]
     entities:
 
       - name: "Main Menu"
@@ -44,6 +46,8 @@ worlds:
             value: 1010
 
   - name: "Common"
+    zoom: 1
+    origin: [0, 0]
     entities:
 
       - name: "Mouse Arrow"

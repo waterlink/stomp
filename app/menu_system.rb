@@ -1,5 +1,5 @@
 class MenuSystem < Stomp::System
-  def update
+  def update(dt)
     each_menu_item do |entity|
       next if initialized?(entity)
       switch_states(entity, window.mouse_x, window.mouse_y)

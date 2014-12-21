@@ -1,7 +1,7 @@
 class InitSystem < Stomp::System
   DATA_PATH = "resources/common.yml"
 
-  def update
+  def update(dt)
     return if initialized?
     load_entities!
     initialized!

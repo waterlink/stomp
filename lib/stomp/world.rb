@@ -1,5 +1,5 @@
 module Stomp
-  class World < Struct.new(:name)
+  class World < Struct.new(:name, :zoom, :origin)
 
     class << self
       attr_accessor :active_world, :common_world
@@ -14,12 +14,16 @@ module Stomp
       end
 
       def from_hash(hash)
-        worlds[hash["name"]] ||= new(hash["name"])
+        worlds[hash["name"]] ||= new(*(hash.values_at("name", "zoom", "origin")))
           .with_hashed_entities(hash["entities"])
       end
 
       def active_world?(world_name)
         [active_world, common_world].include?(world_name)
+      end
+
+      def from_name(name)
+        worlds[name]
       end
 
       private
@@ -31,6 +35,7 @@ module Stomp
 
     def with_hashed_entities(list)
       list.each { |hash| Entity.from_hash(hash, world: name) }
+      self
     end
 
   end

@@ -7,7 +7,7 @@ class CollisionSystem < Stomp::System
   POSITIONAL_CORRECTION_PERCENTAGE = 0.8
   POSITIONAL_CORRECTION_SLOP = 0.999999
 
-  def update
+  def update(dt)
     Stomp::Component.each_entity(CollisionShape) do |entity|
       Stomp::Component.each_entity(CollisionShape) do |other|
         next if other == entity

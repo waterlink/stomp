@@ -1,5 +1,8 @@
 module Stomp
   class Window < Gosu::Window
+    FPS = 100
+    DT = 1.0 / FPS
+
     def initialize
       super(width, height, fullscreen?)
       self.caption = title
@@ -8,7 +11,7 @@ module Stomp
     end
 
     def update
-      systems.each(&:update)
+      full_systems_update
       propagate_mouse_move
       remember_mouse_position
     end
@@ -28,7 +31,44 @@ module Stomp
 
     private
 
-    attr_reader :old_mouse_x, :old_mouse_y
+    attr_reader :old_mouse_x, :old_mouse_y, :previous_now
+
+    def full_systems_update
+      reset_time_passed
+      passed = time_passed
+      return first_systems_update unless passed
+      while passed >= DT
+        passed -= DT
+        systems_update
+      end
+      remember_previous_now(passed)
+    end
+
+    def first_systems_update
+      systems_update
+      remember_previous_now(0)
+    end
+
+    def systems_update
+      systems.each { |s| s.update(DT) }
+    end
+
+    def time_passed
+      return unless previous_now
+      @_time_passed ||= now - previous_now
+    end
+
+    def reset_time_passed
+      @_time_passed = nil
+    end
+
+    def now
+      Gosu.milliseconds / 1000.0
+    end
+
+    def remember_previous_now(correction)
+      @previous_now = now - correction
+    end
 
     def propagate_mouse_click(id)
       return unless mouse_button?(id)

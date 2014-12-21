@@ -1,7 +1,7 @@
 class GravitySystem < Stomp::System
-  G = 1.96
+  G = 9.8
 
-  def update
+  def update(dt)
     Stomp::Component.each_entity(Mass) do |entity|
       next if entity[PlanetSurface] || already_applied?(entity)
       entity[ForceParts] ||= ForceParts[[]]

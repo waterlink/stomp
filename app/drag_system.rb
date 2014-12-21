@@ -1,5 +1,5 @@
 class DragSystem < Stomp::System
-  def update
+  def update(dt)
     Stomp::Component.each_entity(DraggedByMouse) do |entity|
       move(entity, window.mouse_x, window.mouse_y)
     end

@@ -1,5 +1,5 @@
 class ForceSystem < Stomp::System
-  def update
+  def update(dt)
     Stomp::Component.each_entity(ForceParts) do |entity|
       entity[Force] ||= Force[0, 0]
       add_forces(entity)

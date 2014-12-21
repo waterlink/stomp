@@ -1,6 +1,6 @@
 module Stomp
   class System < Struct.new(:window)
-    def update
+    def update(dt)
     end
 
     def draw

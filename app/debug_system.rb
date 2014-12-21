@@ -96,8 +96,6 @@ class DebugSystem < Stomp::System
     vector = Bond
     color_b = color_a = Gosu::Color::WHITE
 
-    puts "draw_thread#{[a[Bond], b[Bond]]}"
-
     window.draw_line(a[origin].x + a[vector].x,
                      a[origin].y + a[vector].y,
                      color_a,

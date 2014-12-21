@@ -1,5 +1,5 @@
 class SceneSystem < Stomp::System
-  def update
+  def update(dt)
     Stomp::Component.each_entity(Scene) do |entity|
       next if is_current_scene?(entity[Scene])
       return load_scene(entity)

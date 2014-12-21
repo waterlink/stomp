@@ -1,6 +1,8 @@
 active_world: "Level 1"
 worlds:
   - name: "Level 1"
+    zoom: 50
+    origin: [0, 600]
     entities:
 
       - name: "Ground"
