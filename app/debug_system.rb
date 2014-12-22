@@ -20,12 +20,36 @@ class DebugSystem < Stomp::System
     #draw_circles(Position, CircleShape, Gosu::Color::WHITE)
     #draw_aabbs(Position, AabbShape, Gosu::Color::WHITE)
 
+    draw_rigids(Gosu::Color::WHITE)
+
     if defined?(BondSystem) && BondSystem.instance
       BondSystem.instance.handle_bond_links(BondThread) { |_, a, b| draw_thread(a, b) }
     end
   end
 
   private
+
+  def draw_rigids(color)
+    Stomp::Component.each_entity(RigidShape) do |entity|
+      next unless entity[Position]
+
+      ox, oy = entity.get_world.position(entity[Position].x, entity[Position].y)
+
+      entity[RigidShape].vertices.each_cons(2) do |v1, v2|
+
+        x1, y1 = entity.get_world.relative_position(*v1)
+        x2, y2 = entity.get_world.relative_position(*v2)
+
+        (x1, y1), (x2, y2) = Stomp::Math.fadd([[x1, y1], [x2, y2]],
+                                              [ox, oy])
+
+        window.draw_line(x1, y1, color,
+                         x2, y2, color,
+                         DEBUG_Z)
+
+      end
+    end
+  end
 
   def draw_vectors(origin, vector, color_a, color_b, scale)
     Stomp::Component.each_entity(vector) do |entity|

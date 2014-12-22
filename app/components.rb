@@ -12,8 +12,14 @@ PreviousPosition = Stomp.component("PreviousPosition", :x, :y)
 Velocity = Stomp.component("Velocity", :x, :y)
 Acceleration = Stomp.component("Acceleration", :x, :y)
 
+Orient = Stomp.component("Orient", :value)
+AngularVelocity = Stomp.component("AngularVelocity", :value)
+
 Mass = Stomp.component("Mass", :value, :inverted)
 Force = Stomp.component("Force", :x, :y)
+
+Moment = Stomp.component("Moment", :value, :inverted)
+Torque = Stomp.component("Torque", :value)
 
 ForceParts = Stomp.component("ForceParts", :parts)
 ForceParts::DRAG = 0
@@ -35,6 +41,8 @@ DraggedByMouse = Stomp.component("DraggedByMouse")
 CollisionShape = Stomp.component("CollisionShape")
 CircleShape = Stomp.component("CircleShape", :x, :y, :r)
 AabbShape = Stomp.component("AabbShape", :min_x, :min_y, :max_x, :max_y)
+RigidShape = Stomp.component("RigidShape", :vertices)
+
 Restitution = Stomp.component("Restitution", :value)
 StaticFriction = Stomp.component("StaticFriction", :value)
 DynamicFriction = Stomp.component("DynamicFriction", :value)

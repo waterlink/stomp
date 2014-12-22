@@ -13,6 +13,7 @@
   - exit_system
   - scene_system
   - drag_system
+  - rotation_system
   - movement_system
   - collision_system
   - gravity_system

@@ -15,13 +15,68 @@ module Stomp
         d = x ** 2 + y ** 2
         return v if d == 0
         d = ::Math.sqrt(d)
-        [x / d, y / d]
+        [x / d, y / d, *other]
       end
 
       def sign(x)
         return -1 if x < 0
         return 1 if x > 0
         0
+      end
+
+      def rotate_vector(v, angle)
+        x, y = v
+        cos = ::Math.cos(angle)
+        sin = ::Math.sin(angle)
+        [x * cos - y * sin,
+         x * sin + y * cos]
+      end
+
+      def rotate_point(p, o, angle)
+        x, y = p
+        ox, oy = o
+        x, y = rotate_vector([x - ox, y - oy], angle)
+        [x + ox, y + oy]
+      end
+
+      def dot_product(v1, v2)
+        x1, y1 = v1
+        x2, y2 = v2
+        x1 * x2 + y1 * y2
+      end
+
+      def vsub(v1, v2)
+        x1, y1 = v1
+        x2, y2 = v2
+        [x1 - x2, y1 - y2]
+      end
+
+      def hypot2(a, b)
+        (x1, y1), (x2, y2) = [a, b]
+        (x1 - x2) ** 2 + (y1 - y2) ** 2
+      end
+
+      def to_v(pos)
+        [pos.x, pos.y]
+      end
+
+      def vadd(a, b)
+        (x1, y1), (x2, y2) = [a, b]
+        [x1 + x2, y1 + y2]
+      end
+
+      def vmul(a, k)
+        x, y = a
+        [x * k, y * k]
+      end
+
+      def fadd(face, v)
+        v1, v2 = face
+        [vadd(v1, v), vadd(v2, v)]
+      end
+
+      def vneg(v)
+        vmul(v, -1)
       end
 
     end
