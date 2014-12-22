@@ -1,6 +1,9 @@
 class CollisionSystem < Stomp::System
   DEFAULT_RESTITUTION = 1.0
+
   DEFAULT_MASS = 5
+  DEFAULT_MOMENT = 25
+
   DEFAULT_STATIC_FRICTION = 0.7
   DEFAULT_DYNAMIC_FRICTION = 0.3
 
@@ -25,7 +28,7 @@ class CollisionSystem < Stomp::System
   end
 
   def support_point(shape, direction)
-    shape.map { |vertex| [Stomp::Math.dot_product(direction, vertex), vertex]}.max
+    shape.map { |vertex| [Stomp::Math.dot_product(vertex, direction), vertex]}.max
   end
 
   def get_normal(face, origin)
@@ -44,20 +47,28 @@ class CollisionSystem < Stomp::System
     shape_a.each_cons(2).map { |face|
       nx, ny = get_normal(face, [0, 0])
       _, (sx, sy) = support_point(shape_b, [-nx, -ny])
+
       vx, vy = Stomp::Math.vmul(Stomp::Math.vadd(face[0],
                                                  face[1]),
                                 0.5)
-      vx, vy = [vx + pos_a[0] - pos_b[0], vy + pos_a[1] - pos_b[1]]
+      vx, vy = Stomp::Math.vadd([vx, vy],
+                                Stomp::Math.vsub(pos_a, pos_b))
       svx, svy = [sx - vx, sy - vy]
       d = Stomp::Math.dot_product([nx, ny], [svx, svy])
       [d, face]
     }.max
   end
 
+  def shape_from(entity)
+    return [] unless entity[RigidShape]
+    return entity[RigidShape].vertices unless entity[Orient]
+    Stomp::Math.shape_from(entity[RigidShape].vertices, entity[Orient].value)
+  end
+
   def find_incident_face(ref_shape, inc_shape, ref_face)
     ref_normal = get_normal(ref_face, [0, 0])
 
-    min_dot, inc_face = inc_shape[RigidShape].vertices.each_cons(2).map do |face|
+    min_dot, inc_face = shape_from(inc_shape).each_cons(2).map do |face|
       normal = get_normal(face, [0, 0])
       dot = Stomp::Math.dot_product(ref_normal, normal)
       [dot, face]
@@ -74,11 +85,6 @@ class CollisionSystem < Stomp::System
 
     d1 = Stomp::Math.dot_product(n, face[0]) - c
     d2 = Stomp::Math.dot_product(n, face[1]) - c
-
-    #puts [n, c, face].inspect
-    #puts [d1, d2].inspect
-
-    return [face[0], face[1]] if (d1 - d2).abs < EPS
 
     new_face << face[0] if d1 <= 0
     new_face << face[1] if d2 <= 0
@@ -103,8 +109,7 @@ class CollisionSystem < Stomp::System
     normalize(circle_vs_circle(a, b) ||
               circle_vs_rigid(a, b) ||
               circle_vs_rigid(b, a) ||
-              rigid_vs_rigid(a, b) ||
-              rigid_vs_rigid(b, a))
+              rigid_vs_rigid(a, b))
   end
 
   # returns [nx, ny, penetration, contacts]
@@ -127,7 +132,7 @@ class CollisionSystem < Stomp::System
     radius = a[CircleShape].r
     radius2 = radius ** 2
 
-    s, face, normal = b[RigidShape].vertices.each_cons(2).map { |face|
+    s, face, normal = shape_from(b).each_cons(2).map { |face|
       v, _ = face
       vx, vy = v
       nx, ny = get_normal(face, [0, 0])
@@ -224,17 +229,16 @@ class CollisionSystem < Stomp::System
     return unless a[RigidShape] && b[RigidShape]
 
     penetration_a, face_a = axis_least_penetration(Stomp::Math.to_v(a[Position]),
-                                                   a[RigidShape].vertices,
+                                                   shape_from(a),
                                                    Stomp::Math.to_v(b[Position]),
-                                                   b[RigidShape].vertices)
+                                                   shape_from(b))
 
     penetration_b, face_b = axis_least_penetration(Stomp::Math.to_v(b[Position]),
-                                                   b[RigidShape].vertices,
+                                                   shape_from(b),
                                                    Stomp::Math.to_v(a[Position]),
-                                                   a[RigidShape].vertices)
+                                                   shape_from(a))
 
-    return if penetration_b >= 0 ||
-      penetration_a >= 0
+    return if penetration_b >= 0 || penetration_a >= 0
 
     if bias_greater_than(penetration_a, penetration_b)
 
@@ -404,9 +408,11 @@ class CollisionSystem < Stomp::System
     d = Math.sqrt(nx * nx + ny * ny)
 
     if d != 0
-      [nx / d, ny / d, r - d]
+      contact = Stomp::Math.vadd(Stomp::Math.to_v(a[Position]),
+                                 Stomp::Math.vmul([nx, ny], a[CircleShape].r))
+      [nx / d, ny / d, r - d, [contact]]
     else
-      [1, 0, a[CircleShape].r]
+      [1, 0, a[CircleShape].r, [Stomp::Math.to_v(a[Position])]]
     end
   end
 
@@ -424,6 +430,9 @@ class CollisionSystem < Stomp::System
     a[Velocity] ||= Velocity[0, 0]
     b[Velocity] ||= Velocity[0, 0]
 
+    a[AngularVelocity] ||= AngularVelocity[0]
+    b[AngularVelocity] ||= AngularVelocity[0]
+
     a[Restitution] ||= Restitution[DEFAULT_RESTITUTION]
     b[Restitution] ||= Restitution[DEFAULT_RESTITUTION]
 
@@ -433,43 +442,83 @@ class CollisionSystem < Stomp::System
     a[Mass].inverted ||= a[Mass].value == 0 ? 0 : 1.0 / a[Mass].value
     b[Mass].inverted ||= b[Mass].value == 0 ? 0 : 1.0 / b[Mass].value
 
-    # relative velocity
-    rvx, rvy = [b[Velocity].x - a[Velocity].y,
-                b[Velocity].y - a[Velocity].y]
+    a[Moment] ||= Moment[DEFAULT_MOMENT]
+    b[Moment] ||= Moment[DEFAULT_MOMENT]
+
+    a[Moment].inverted ||= a[Moment].value == 0 ? 0 : 1.0 / a[Moment].value
+    b[Moment].inverted ||= b[Moment].value == 0 ? 0 : 1.0 / b[Moment].value
 
     # destructure normal
-    nx, ny = normal
+    nx, ny, _, contacts = normal
 
-    # relative velocity normalized
-    norm_vel = rvx * nx + rvy * ny
+    contacts.each do |contact|
 
-    # do not resolve if objects are already separating
-    return if norm_vel > 0
+      # radius to contact points
+      ra, rb = [normalize(Stomp::Math.vsub(contact, Stomp::Math.to_v(a[Position]))),
+                normalize(Stomp::Math.vsub(contact, Stomp::Math.to_v(b[Position])))]
 
-    # get restitution of collision
-    e = [a[Restitution].value, b[Restitution].value].min
+      # relative velocity
+      #rvx, rvy = [b[Velocity].x - a[Velocity].y,
+      #            b[Velocity].y - a[Velocity].y]
+      # (b.velocity + cross[b.angular_velocity], rb) - (a.velocity + cross[a.angular_velocity, rb])
 
-    # get impulse scalar
-    j = -(1 + e) * norm_vel
-    j /= a[Mass].inverted + b[Mass].inverted
+      rvx, rvy = Stomp::Math.vsub(Stomp::Math.vadd(Stomp::Math.to_v(b[Velocity]),
+                                                   Stomp::Math.vmul_cross(b[AngularVelocity].value, rb)),
 
-    # apply impulse
-    ix, iy = [j * nx,
-              j * ny]
+                                  Stomp::Math.vadd(Stomp::Math.to_v(a[Velocity]),
+                                                   Stomp::Math.vmul_cross(b[AngularVelocity].value, ra)))
 
-    a[Velocity].x -= a[Mass].inverted * ix
-    a[Velocity].y -= a[Mass].inverted * iy
+      # relative velocity projected on normal
+      norm_vel = Stomp::Math.dot_product([rvx, rvy], [nx, ny])
 
-    b[Velocity].x += b[Mass].inverted * ix
-    b[Velocity].y += b[Mass].inverted * iy
+      # do not resolve if objects are already separating
+      return if norm_vel > 0
 
-    apply_friction(normal, a, b, j)
+      # get restitution of collision
+      e = [a[Restitution].value, b[Restitution].value].min
 
-    positional_correction(normal, a, b)
+      ra_x_normal = Stomp::Math.cross_product((ra), [nx, ny])
+      rb_x_normal = Stomp::Math.cross_product((rb), [nx, ny])
+
+      inv_mass_sum = [a[Mass].inverted,
+                      b[Mass].inverted,
+                      a[Moment].inverted * (ra_x_normal ** 2),
+                      b[Moment].inverted * (rb_x_normal ** 2)].inject(:+)
+
+      # get impulse scalar
+      j = -(1 + e) * norm_vel
+      j /= 1.0 * inv_mass_sum * contacts.count
+
+      # apply impulse
+      ix, iy = [j * nx, j * ny]
+
+      a[Velocity].x -= a[Mass].inverted * ix
+      a[Velocity].y -= a[Mass].inverted * iy
+
+      b[Velocity].x += b[Mass].inverted * ix
+      b[Velocity].y += b[Mass].inverted * iy
+
+      a[AngularVelocity].value -= a[Moment].inverted * Stomp::Math.cross_product(ra, [ix, iy])
+      b[AngularVelocity].value += b[Moment].inverted * Stomp::Math.cross_product(rb, [ix, iy])
+
+      #if Array === contacts
+      #  contacts.each do |contact|
+      #    contact_vector_a = Stomp::Math.vsub(Stomp::Math.to_v(a[Position]), contact)
+      #    contact_vector_b = Stomp::Math.vsub(Stomp::Math.to_v(b[Position]), contact)
+      #    a[AngularVelocity].value -= a[Moment].inverted * Stomp::Math.cross_product(contact_vector_b, [ix, iy])
+      #    b[AngularVelocity].value += b[Moment].inverted * Stomp::Math.cross_product(contact_vector_b, [ix, iy])
+      #  end
+      #end
+
+      apply_friction(normal, a, b, j, ra, rb, 1.0 * inv_mass_sum * contacts.count)
+
+      positional_correction(normal, a, b)
+
+    end
 
   end
 
-  def apply_friction(normal, a, b, j)
+  def apply_friction(normal, a, b, j, ra, rb, inv_mass_sum)
     a[StaticFriction] ||= StaticFriction[DEFAULT_STATIC_FRICTION]
     a[DynamicFriction] ||= DynamicFriction[DEFAULT_DYNAMIC_FRICTION]
 
@@ -478,14 +527,19 @@ class CollisionSystem < Stomp::System
 
     nx, ny = normal
 
-    rvx, rvy = [b[Velocity].x - a[Velocity].x,
-                b[Velocity].y - a[Velocity].y]
+    rvx, rvy = Stomp::Math.vsub(Stomp::Math.vadd(Stomp::Math.to_v(b[Velocity]),
+                                                 Stomp::Math.vmul_cross(b[AngularVelocity].value, rb)),
+
+                                Stomp::Math.vadd(Stomp::Math.to_v(a[Velocity]),
+                                                 Stomp::Math.vmul_cross(b[AngularVelocity].value, ra)))
 
     tx, ty = normalize([rvx - (rvx * nx + rvy * ny) * nx,
                         rvy - (rvx * nx + rvy * ny) * ny])
 
     jt = -(rvx * tx + rvy * ty)
-    jt /= a[Mass].inverted + b[Mass].inverted
+    jt /= inv_mass_sum
+
+    return if jt.abs < EPS
 
     mu = (a[StaticFriction].value + b[StaticFriction].value) * 0.5
 
@@ -501,18 +555,17 @@ class CollisionSystem < Stomp::System
 
     b[Velocity].x += b[Mass].inverted * fix
     b[Velocity].y += b[Mass].inverted * fiy
+
+    a[AngularVelocity].value -= a[Moment].inverted * Stomp::Math.cross_product(ra, [fix, fiy])
+    b[AngularVelocity].value += b[Moment].inverted * Stomp::Math.cross_product(rb, [fix, fiy])
   end
 
   def positional_correction(normal, a, b)
     nx, ny, penetration = normal
 
-    puts "penetration: #{penetration}"
-
     inv_mass = a[Mass].inverted + b[Mass].inverted
     c = 1.0 * penetration * POSITIONAL_CORRECTION_SLOP / inv_mass * POSITIONAL_CORRECTION_PERCENTAGE
     cx, cy = [c * nx, c * ny]
-
-    puts "correction by #{[cx, cy]}"
 
     a[Position].x -= a[Mass].inverted * cx
     a[Position].y -= a[Mass].inverted * cy

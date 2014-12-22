@@ -29,13 +29,19 @@ class DebugSystem < Stomp::System
 
   private
 
+  def shape_from(entity)
+    return [] unless entity[RigidShape]
+    return entity[RigidShape].vertices unless entity[Orient]
+    Stomp::Math.shape_from(entity[RigidShape].vertices, entity[Orient].value)
+  end
+
   def draw_rigids(color)
     Stomp::Component.each_entity(RigidShape) do |entity|
       next unless entity[Position]
 
       ox, oy = entity.get_world.position(entity[Position].x, entity[Position].y)
 
-      entity[RigidShape].vertices.each_cons(2) do |v1, v2|
+      shape_from(entity).each_cons(2) do |v1, v2|
 
         x1, y1 = entity.get_world.relative_position(*v1)
         x2, y2 = entity.get_world.relative_position(*v2)

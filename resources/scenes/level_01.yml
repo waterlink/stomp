@@ -17,6 +17,8 @@ worlds:
             values: [1024, 500]
           - type: Mass
             value: 0
+          - type: Moment
+            value: 0
           - type: PlanetSurface
           - type: Fixed
           - type: AabbShape
@@ -248,22 +250,22 @@ worlds:
       #    - type: BondThread
       #      values: [13, 14, 3, 1.5]
 
-      - name: "Block 1"
-        components:
-          - type: Sprite
-            value: "block.png"
-          - type: Position
-            values: [25, 25]
-          - type: Size
-            values: [1.0, 0.64]
-          - type: DragByMouse
-          - type: Mass
-            value: 5
-          - type: AabbShape
-            values: [-0.5, -0.32, 0.5, 0.32] 
-          - type: CollisionShape
-          - type: Restitution
-            value: 0.2
+      #- name: "Block 1"
+      #  components:
+      #    - type: Sprite
+      #      value: "block.png"
+      #    - type: Position
+      #      values: [25, 25]
+      #    - type: Size
+      #      values: [1.0, 0.64]
+      #    - type: DragByMouse
+      #    - type: Mass
+      #      value: 5
+      #    - type: AabbShape
+      #      values: [-0.5, -0.32, 0.5, 0.32] 
+      #    - type: CollisionShape
+      #    - type: Restitution
+      #      value: 0.2
 
       - name: "Block 2"
         components:
@@ -303,39 +305,32 @@ worlds:
               - [0.8, 1.0]
               - [1.0, 0.8]
               - [1.0, 0.4]
-              - [0.6, 0.2]
               - [1.0, -0.2]
               - [1.0, -0.4]
               - [0.6, -1.0]
               - [-0.4, -1.0]
-              - [-0.6, -0.6]
-              - [-0.8, -0.6]
               - [-1.0, -0.4]
               - [-1.0, 0.2]
               - [0.4, 1.0]
 
-      #- name: "Rotated Eye"
-      #  components:
-      #    - type: Sprite
-      #      value: "eye.png"
-      #    - type: Position
-      #      values: [20, 20]
-      #    - type: Size
-      #      values: [2.64, 2.64]
-      #    - type: DragByMouse
-      #    - type: Mass
-      #      value: 5
-      #    - type: Moment
-      #      value: 0.5
-      #    - type: AngularVelocity
-      #      value: 0.1
-      #    - type: Torque
-      #      value: 1
-      #    - type: CircleShape
-      #      values: [0, 0, 1.32]
-      #    - type: CollisionShape
-      #    - type: Restitution
-      #      value: 0.1
+      - name: "Rotated Eye"
+        components:
+          - type: Sprite
+            value: "eye.png"
+          - type: Position
+            values: [20, 20]
+          - type: Size
+            values: [2.64, 2.64]
+          - type: DragByMouse
+          - type: Mass
+            value: 5
+          - type: Moment
+            value: 25
+          - type: CircleShape
+            values: [0, 0, 1.32]
+          - type: CollisionShape
+          - type: Restitution
+            value: 0.1
 
       #- name: "Ball 8"
       #  components:

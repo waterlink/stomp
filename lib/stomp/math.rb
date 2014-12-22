@@ -24,6 +24,11 @@ module Stomp
         0
       end
 
+      def shape_from(vertices, angle)
+        return vertices unless angle
+        vertices.map { |p| Stomp::Math.rotate_vector(p, angle) }
+      end
+
       def rotate_vector(v, angle)
         x, y = v
         cos = ::Math.cos(angle)
@@ -77,6 +82,21 @@ module Stomp
 
       def vneg(v)
         vmul(v, -1)
+      end
+
+      def cross_product(v1, v2)
+        (x1, y1), (x2, y2) = [v1, v2]
+        x1 * y2 - x2 * y1
+      end
+
+      def cross_vmul(v, a)
+        x, y = v
+        [a * x, -a * y]
+      end
+
+      def vmul_cross(a, v)
+        x, y = v
+        [-a * x, a * y]
       end
 
     end
