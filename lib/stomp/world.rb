@@ -52,5 +52,9 @@ module Stomp
        y * ay * zoom]
     end
 
+    def size(w, h)
+      [w * zoom, h * zoom]
+    end
+
   end
 end

@@ -72,10 +72,9 @@ class MenuSystem < Stomp::System
   end
 
   def inside_bounding_box?(x, y, entity)
-    _inside_bounding_box?(x, y, entity[Position], entity[Size])
-  end
+    px, py = entity.get_world.position(*(Stomp::Math.to_v(entity[Position])))
+    w, h = entity.get_world.size(*(Stomp::Math.to_v(entity[Size])))
 
-  def _inside_bounding_box?(x, y, position, size)
-    Stomp::Math.inside_bounding_box?(x, y, position.x, position.y, size.x, size.y)
+    Stomp::Math.inside_bounding_box?(x, y, px, py, w, h)
   end
 end
