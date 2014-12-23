@@ -27,6 +27,7 @@ module Stomp
     end
 
     def button_up(id)
+      propagate_key_up(id)
       propagate_mouse_click(id)
     end
 
@@ -87,6 +88,10 @@ module Stomp
 
     def propagate_keystroke(id)
       systems.each { |x| x.keystroke(id) }
+    end
+
+    def propagate_key_up(id)
+      systems.each { |x| x.key_up(id) }
     end
 
     def propagate_mouse_move

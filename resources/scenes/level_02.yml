@@ -1,0 +1,65 @@
+active_world: "Level 2"
+worlds:
+  - name: "Level 2"
+    zoom: 1
+    origin: [0, 0]
+    axes: [1, 1]
+    gravity: 0
+    entities:
+
+      - name: "Keybinding: Pause"
+        components:
+          - type: Keybinding
+            values:
+              - KbEscape
+              - type: SwitchWorld
+                value: "Pause Screen"
+
+
+  - name: "Pause Screen"
+    zoom: 1
+    origin: [0, 0]
+    axes: [1, 1]
+    gravity: 0
+    entities:
+
+      - name: "Keybinding: Continue"
+        components:
+          - type: Keybinding
+            values:
+              - KbEscape
+              - type: SwitchWorldBack
+
+      - name: "Previous level"
+        components:
+          - type: MenuItem
+            values:
+              - type: Sprite
+                value: "previous_level.png"
+              - type: Sprite
+                value: "previous_level_active.png"
+              - type: Scene
+                value: "level_01.yml"
+          - type: Position
+            values: [400, 250]
+          - type: Size
+            values: [304, 59]
+          - type: LayerIndex
+            value: 1010
+
+      - name: "Next level"
+        components:
+          - type: MenuItem
+            values:
+              - type: Sprite
+                value: "next_level.png"
+              - type: Sprite
+                value: "next_level_active.png"
+              - type: Scene
+                value: "level_03.yml"
+          - type: Position
+            values: [400, 320]
+          - type: Size
+            values: [304, 59]
+          - type: LayerIndex
+            value: 1010

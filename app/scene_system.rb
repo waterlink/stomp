@@ -23,6 +23,7 @@ class SceneSystem < Stomp::System
   def load_scene(entity)
     drop_current_scene
     load_entities(scene(entity[Scene].path))
+    entity.drop
   end
 
   def load_entities(data)

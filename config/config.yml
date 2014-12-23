@@ -19,5 +19,7 @@
   - gravity_system
   - force_system
   - bond_system
+  - keybinding_system
+  - world_system
 
-  - debug_system
+  #- debug_system

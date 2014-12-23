@@ -35,6 +35,11 @@ MouseArrow = Stomp.component("MouseArrow")
 Scene = Stomp.component("Scene", :path)
 CurrentScene = Stomp.component("CurrentScene", :value)
 
+SwitchWorld = Stomp.component("SwitchWorld", :value)
+SwitchWorldBack = Stomp.component("SwitchWorldBack")
+
+Keybinding = Stomp.component("Keybinding", :key, :action)
+
 DragByMouse = Stomp.component("DragByMouse")
 DraggedByMouse = Stomp.component("DraggedByMouse")
 
