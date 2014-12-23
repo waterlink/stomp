@@ -24,5 +24,9 @@
   - damage_system
   - decay_system
   - animation_system
+  - timeout_system
+  - magnet_system
+  - entity_system
+  - condition_system
 
-  - debug_system
+  #- debug_system

@@ -14,9 +14,6 @@ class DebugSystem < Stomp::System
   end
 
   def update(dt)
-    Stomp::Component.each_entity(UnderPlayerControl) do |entity|
-      puts "Player Position: #{entity[Position]}"
-    end
   end
 
   def draw

@@ -24,10 +24,11 @@ class DamageSystem < Stomp::System
 
   def _inflict_damage(entity)
     entity[Health].value -= damage(entity)
+    remove_damage(entity)
   end
 
   def inflict_death(entity)
-    return if death_can_be_inflicted?(entity)
+    return unless death_can_be_inflicted?(entity)
     _inflict_death(entity)
     entity.remove(OnDeath)
   end
@@ -37,7 +38,7 @@ class DamageSystem < Stomp::System
   end
 
   def death_can_be_inflicted?(entity)
-    alive?(entity) && entity[OnDeath]
+    !alive?(entity) && entity[OnDeath]
   end
 
   def alive?(entity)
@@ -46,6 +47,10 @@ class DamageSystem < Stomp::System
 
   def damage(entity)
     _damage(entity[InflictedDamage].value, entity[DamageResistance].value)
+  end
+
+  def remove_damage(entity)
+    entity.remove(InflictedDamage)
   end
 
   def _damage(inflicted, resistance)

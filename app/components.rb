@@ -29,6 +29,7 @@ ForceParts = Stomp.component("ForceParts", :parts)
 ForceParts::DRAG = 0
 ForceParts::GRAVITY = 1
 ForceParts::BOND = 2
+ForceParts::MAGNET = 3
 
 Bond = Stomp.component("Bond", :id, :x, :y)
 BondThread = Stomp.component("BondThread", :id1, :id2, :length, :power)
@@ -62,6 +63,7 @@ DynamicFriction = Stomp.component("DynamicFriction", :value)
 PlanetSurface = Stomp.component("PlanetSurface")
 
 UnderPlayerControl = Stomp.component("UnderPlayerControl")
+AppendEntity = Stomp.component("AppendEntity", :type, :component_list)
 
 Health = Stomp.component("Health", :value)
 DamageResistance = Stomp.component("DamageResistance", :value)
@@ -71,3 +73,8 @@ Decay = Stomp.component("Decay", :time)
 
 Animation = Stomp.component("Animation", :length, :frames, :time)
 
+TimedAction = Stomp.component("TimedAction", :timeout, :action, :time)
+
+Magnet = Stomp.component("Magnet", :power)
+
+Condition = Stomp.component("Condition", :predicate, :expectation, :action)

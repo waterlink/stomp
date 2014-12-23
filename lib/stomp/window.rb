@@ -1,6 +1,6 @@
 module Stomp
   class Window < Gosu::Window
-    FPS = 70
+    FPS = 120
     DT = 1.0 / FPS
     MAX_PASSED_TIME = 0.3
 
@@ -57,7 +57,7 @@ module Stomp
 
     def time_passed
       return unless previous_now
-      @_time_passed ||= now - previous_now
+      @_time_passed ||= [now - previous_now, MAX_PASSED_TIME].min
     end
 
     def reset_time_passed

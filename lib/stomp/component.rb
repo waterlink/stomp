@@ -37,6 +37,14 @@ module Stomp
         end
       end
 
+      def count(type)
+        count = 0
+        each_entity(type) do |entity|
+          count += 1
+        end
+        count
+      end
+
       def register_type(name, type)
         types << type
         type_names[name] = type
@@ -48,6 +56,7 @@ module Stomp
 
       def register(entity, type, component)
         assign_entity(component, entity)
+        handle_custom_component(component)
         register_to_free_pool(type, component) ||
           register_as_new(type, component)
       end
@@ -66,6 +75,15 @@ module Stomp
       def auto_type(type)
         return type_from_name(type) if String === type
         type
+      end
+
+      def handle_custom_component(component)
+        return unless custom?(component)
+        Stomp.component(component.name)
+      end
+
+      def custom?(component)
+        Custom === component
       end
 
       def assign_entity(component, entity)
@@ -143,5 +161,8 @@ module Stomp
       end
 
     end
+    
+    Custom = Stomp.component("Custom", :name)
+
   end
 end
