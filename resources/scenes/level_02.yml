@@ -21,7 +21,7 @@ worlds:
           - type: Keybinding
             values:
               - KbLeft
-              - type: SetAcceleration
+              - type: AddAcceleration
                 values: [UnderPlayerControl, -1000, 0]
 
       - name: "Keybinding: Move left [up]"
@@ -29,15 +29,15 @@ worlds:
           - type: KeybindingUp
             values:
               - KbLeft
-              - type: SetAcceleration
-                values: [UnderPlayerControl, 0, 0]
+              - type: AddAcceleration
+                values: [UnderPlayerControl, +1000, 0]
 
       - name: "Keybinding: Move right"
         components:
           - type: Keybinding
             values:
               - KbRight
-              - type: SetAcceleration
+              - type: AddAcceleration
                 values: [UnderPlayerControl, +1000, 0]
 
       - name: "Keybinding: Move right [up]"
@@ -45,8 +45,8 @@ worlds:
           - type: KeybindingUp
             values:
               - KbRight
-              - type: SetAcceleration
-                values: [UnderPlayerControl, 0, 0]
+              - type: AddAcceleration
+                values: [UnderPlayerControl, -1000, 0]
 
       - name: "Ball"
         components:
@@ -73,6 +73,34 @@ worlds:
           - type: CollisionShape
           - type: CircleShape
             values: [0, 0, 5]
+          - type: OnDeath
+            value:
+
+              - type: Sprite
+                value: "ball_explosion.png"
+              - type: Size
+                values: [3, 3]
+              - type: Animation
+                values:
+
+                  - 0.1
+                  - 
+                    - type: Size
+                      values: [15, 15]
+                    - type: Size
+                      values: [25, 25]
+                    - type: Size
+                      values: [32, 32]
+                    - type: Size
+                      values: [37, 37]
+                    - type: Size
+                      values: [40, 40]
+
+              - type: Velocity
+                values: [0, 0]
+              - type: Fixed
+              - type: Decay
+                value: 0.5
 
       - name: "Player's bat"
         components:
@@ -80,7 +108,7 @@ worlds:
           - type: Sprite
             value: "bat.png"
           - type: Position
-            values: [400, 500]
+            values: [400, 570]
           - type: Size
             values: [70, 10]
           - type: Mass
@@ -195,6 +223,37 @@ worlds:
             value: 3
           - type: AabbShape
             values: [-300, -2.5, 300, 2.5]
+
+      - name: "Death wall"
+        components:
+          - type: Fixed
+          - type: Sprite
+            value: "horizontal_wall.png"
+          - type: Position
+            values: [300, 600]
+          - type: Size
+            values: [600, 5]
+          - type: Mass
+            value: 0
+          - type: Moment
+            value: 0
+          - type: Restitution
+            value: 2
+          - type: StaticFriction
+            value: 0
+          - type: DynamicFriction
+            value: 0
+          - type: CollisionShape
+            value: 4
+          - type: AabbShape
+            values: [-300, -2.5, 300, 2.5]
+          - type: OnCollision
+            values:
+              - 
+                - type: InflictedDamage
+                  value: 10000
+              - []
+
             
 
 

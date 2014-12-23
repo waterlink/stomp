@@ -28,7 +28,28 @@ class CollisionSystem < Stomp::System
 
   def resolve_collision(a, b)
     return unless same_layer?(a, b)
-    impulse_resolution(collision_normal(a, b), a, b)
+    with_callbacks(impulse_resolution(collision_normal(a, b), a, b), a, b)
+  end
+
+  def with_callbacks(resolved, a, b)
+    run_callbacks(a, b) if resolved
+  end
+
+  def run_callbacks(a, b)
+    inflict_callback(a, b)
+    inflict_callback(b, a)
+    take_callback(a)
+    take_callback(b)
+  end
+
+  def inflict_callback(src, target)
+    return unless src[OnCollision]
+    target.with_hash_components(src[OnCollision].inflict_list)
+  end
+
+  def take_callback(target)
+    return unless target[OnCollision]
+    target.with_hash_components(target[OnCollision].take_list)
   end
 
   def same_layer?(a, b)
@@ -525,6 +546,8 @@ class CollisionSystem < Stomp::System
       positional_correction(normal, a, b)
 
     end
+
+    contacts.count > 0
 
   end
 

@@ -21,5 +21,8 @@
   - bond_system
   - keybinding_system
   - world_system
+  - damage_system
+  - decay_system
+  - animation_system
 
   - debug_system
