@@ -1,5 +1,5 @@
-$:.unshift(File.expand_path(File.join(__FILE__, "..")))
 $:.unshift(File.expand_path(File.join(__FILE__, "..", "..", "app")))
+$:.unshift(File.expand_path(File.join(__FILE__, "..")))
 
 require "yaml"
 require "logger"
@@ -11,6 +11,10 @@ module Stomp
 
   def self.logger
     @_logger ||= Logger.new(STDOUT)
+  end
+
+  def self.run
+    Window.new.show
   end
 end
 

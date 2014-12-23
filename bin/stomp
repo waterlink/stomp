@@ -2,4 +2,19 @@
 
 require "./lib/stomp"
 
-Stomp::Window.new.show
+action, *args = ARGV
+
+ACTIONS = %w(example init)
+
+case action
+when "example"
+  Stomp.run
+when "init"
+  require "fileutils"
+  FileUtils.mkdir_p(File.join(".", "bin"))
+  FileUtils.mkdir_p(File.join(".", "config"))
+  FileUtils.mkdir_p(File.join(".", "resources", "scenes"))
+  FileUtils.mkdir_p(File.join(".", "resources", "sprites"))
+else
+  puts "Unknown action, known are: #{ACTIONS}"
+end
