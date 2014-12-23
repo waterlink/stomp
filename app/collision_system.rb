@@ -10,6 +10,9 @@ class CollisionSystem < Stomp::System
   POSITIONAL_CORRECTION_PERCENTAGE = 0.8
   POSITIONAL_CORRECTION_SLOP = 0.999999
 
+  INFINITE_MASS_POSITIONAL_CORRECTION = 1.2
+  DEFAULT_INFINITE_MASS_VS_FIXED_BOUNCE = 1.01
+
   EPS = 1e-7
 
   def update(dt)
@@ -24,7 +27,13 @@ class CollisionSystem < Stomp::System
   private
 
   def resolve_collision(a, b)
+    return unless same_layer?(a, b)
     impulse_resolution(collision_normal(a, b), a, b)
+  end
+
+  def same_layer?(a, b)
+    return true unless a[CollisionShape].layer && b[CollisionShape].layer
+    a[CollisionShape].layer == b[CollisionShape].layer
   end
 
   def support_point(shape, direction)
@@ -108,7 +117,6 @@ class CollisionSystem < Stomp::System
     return unless a[Position] && b[Position]
     normalize(circle_vs_circle(a, b) ||
               circle_vs_rigid(a, b) ||
-              circle_vs_rigid(b, a) ||
               rigid_vs_rigid(a, b))
   end
 
@@ -427,6 +435,8 @@ class CollisionSystem < Stomp::System
   def impulse_resolution(normal, a, b)
     return unless normal
 
+    return infinite_mass_positional_correction(normal, a, b) if infinite_mass?(a) && infinite_mass?(b)
+
     a[Velocity] ||= Velocity[0, 0]
     b[Velocity] ||= Velocity[0, 0]
 
@@ -572,5 +582,46 @@ class CollisionSystem < Stomp::System
 
     b[Position].x += b[Mass].inverted * cx
     b[Position].y += b[Mass].inverted * cy
+  end
+
+  def infinite_mass?(entity)
+    entity[Mass] ||= Mass[DEFAULT_MASS]
+    entity[Mass].inverted ||= Stomp::Math.inverted_mass(entity[Mass].value)
+    entity[Mass].inverted == 0
+  end
+
+  def infinite_mass_positional_correction(normal, a, b)
+    return infinite_vs_fixed_positional_correction(normal, a) if b[Fixed]
+    return infinite_mass_positional_correction(normal, b, a) if a[Fixed]
+    nx, ny, penetration = normal
+
+    c = INFINITE_MASS_POSITIONAL_CORRECTION * penetration * 0.5
+    cx, cy = [c * nx, c * ny]
+
+    a[Position].x -= cx
+    a[Position].y -= cy
+
+    b[Position].x += cx
+    b[Position].y += cy
+  end
+
+  def infinite_vs_fixed_positional_correction(normal, a)
+    nx, ny, penetration = normal
+
+    c = INFINITE_MASS_POSITIONAL_CORRECTION * penetration
+    cx, cy = [c * nx, c * ny]
+
+    a[Position].x -= cx
+    a[Position].y -= cy
+
+    a[InfiniteMassVsFixedBounce] ||= InfiniteMassVsFixedBounce[DEFAULT_INFINITE_MASS_VS_FIXED_BOUNCE]
+    bounce = a[InfiniteMassVsFixedBounce].value
+
+    v = Stomp::Math.to_v(a[Velocity])
+    vrel = Stomp::Math.dot_product([nx, ny], v) * bounce
+    dv = Stomp::Math.vmul([nx, ny], -vrel)
+
+    a[Velocity].x += dv[0]
+    a[Velocity].y += dv[1]
   end
 end

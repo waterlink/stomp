@@ -99,6 +99,10 @@ module Stomp
         [-a * x, a * y]
       end
 
+      def inverted_mass(x)
+        x == 0 ? 0 : 1.0 / x
+      end
+
     end
   end
 end

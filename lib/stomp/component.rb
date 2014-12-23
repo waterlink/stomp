@@ -32,7 +32,7 @@ module Stomp
     class << self
 
       def each_entity(type)
-        each_component(type) do |component|
+        each_component(auto_type(type)) do |component|
           yield(component.entity) if block_given?
         end
       end
@@ -62,6 +62,11 @@ module Stomp
       end
 
       private
+
+      def auto_type(type)
+        return type_from_name(type) if String === type
+        type
+      end
 
       def assign_entity(component, entity)
         component.entity = entity

@@ -23,7 +23,7 @@ worlds:
             - type: Sprite
               value: "main_menu_play_active.png"
             - type: Scene
-              value: "level_01.yml"
+              value: "level_02.yml"
           - type: Position
             values: [400, 250]
           - type: Size

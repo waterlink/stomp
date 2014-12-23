@@ -4,7 +4,9 @@ class MovementSystem < Stomp::System
 
   def update(dt)
     #debug_info(dt)
+    set_acceleration(dt)
     update_acceleration(dt)
+    update_scalar_acceleration(dt)
     update_velocity(dt)
     lose_velocity(dt)
     update_position(dt)
@@ -21,6 +23,34 @@ class MovementSystem < Stomp::System
     update_vector(Velocity, Acceleration, dt)
   end
 
+  def set_acceleration(dt)
+    Stomp::Component.each_entity(SetAcceleration) do |entity|
+      source = entity[SetAcceleration]
+
+      Stomp::Component.each_entity(source.component) do |target|
+        target[Acceleration] ||= Acceleration[0, 0]
+        target[Acceleration].x = source.x
+        target[Acceleration].y = source.y
+      end
+
+      entity.drop
+    end
+  end
+
+  def update_scalar_acceleration(dt)
+    Stomp::Component.each_entity(ScalarAcceleration) do |entity|
+      entity[Velocity] ||= Velocity[0, 0]
+
+      # v' = v + norm(v) * scalar_acceleration * dt
+      v = Stomp::Math.to_v(entity[Velocity])
+      v_n = Stomp::Math.normalize_vector(v)
+      v = Stomp::Math.vadd(v, Stomp::Math.vmul(v_n, entity[ScalarAcceleration].value * dt))
+
+      entity[Velocity].x = v[0]
+      entity[Velocity].y = v[1]
+    end
+  end
+
   def update_vector(dst_type, src_type, dt)
     Stomp::Component.each_entity(src_type) do |entity|
       next if entity[Fixed]
@@ -34,9 +64,11 @@ class MovementSystem < Stomp::System
     Stomp::Component.each_entity(Force) do |entity|
       next if entity[Fixed]
       entity[Mass] ||= Mass[DEFAULT_MASS]
+      entity[Mass].inverted ||= Stomp::Math.inverted_mass(entity[Mass].value)
+      return if entity[Mass].value == 0
       entity[Acceleration] ||= Acceleration[]
-      entity[Acceleration].x = entity[Force].x / entity[Mass].value
-      entity[Acceleration].y = entity[Force].y / entity[Mass].value
+      entity[Acceleration].x = entity[Force].x * entity[Mass].inverted
+      entity[Acceleration].y = entity[Force].y * entity[Mass].inverted
     end
   end
 

@@ -11,6 +11,9 @@ Position = Stomp.component("Position", :x, :y)
 PreviousPosition = Stomp.component("PreviousPosition", :x, :y)
 Velocity = Stomp.component("Velocity", :x, :y)
 Acceleration = Stomp.component("Acceleration", :x, :y)
+ScalarAcceleration = Stomp.component("ScalarAcceleration", :value)
+
+SetAcceleration = Stomp.component("SetAcceleration", :component, :x, :y)
 
 Orient = Stomp.component("Orient", :value)
 AngularVelocity = Stomp.component("AngularVelocity", :value)
@@ -39,17 +42,21 @@ SwitchWorld = Stomp.component("SwitchWorld", :value)
 SwitchWorldBack = Stomp.component("SwitchWorldBack")
 
 Keybinding = Stomp.component("Keybinding", :key, :action)
+KeybindingUp = Stomp.component("KeybindingUp", :key, :action)
 
 DragByMouse = Stomp.component("DragByMouse")
 DraggedByMouse = Stomp.component("DraggedByMouse")
 
-CollisionShape = Stomp.component("CollisionShape")
+CollisionShape = Stomp.component("CollisionShape", :layer)
 CircleShape = Stomp.component("CircleShape", :x, :y, :r)
 AabbShape = Stomp.component("AabbShape", :min_x, :min_y, :max_x, :max_y)
 RigidShape = Stomp.component("RigidShape", :vertices)
+InfiniteMassVsFixedBounce = Stomp.component("InfiniteMassVsFixedBounce", :value)
 
 Restitution = Stomp.component("Restitution", :value)
 StaticFriction = Stomp.component("StaticFriction", :value)
 DynamicFriction = Stomp.component("DynamicFriction", :value)
 
 PlanetSurface = Stomp.component("PlanetSurface")
+
+UnderPlayerControl = Stomp.component("UnderPlayerControl")

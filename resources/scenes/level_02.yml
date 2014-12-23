@@ -1,6 +1,7 @@
 active_world: "Level 2"
 worlds:
   - name: "Level 2"
+    comment: "Arkanoid"
     zoom: 1
     origin: [0, 0]
     axes: [1, 1]
@@ -14,6 +15,187 @@ worlds:
               - KbEscape
               - type: SwitchWorld
                 value: "Pause Screen"
+
+      - name: "Keybinding: Move left"
+        components:
+          - type: Keybinding
+            values:
+              - KbLeft
+              - type: SetAcceleration
+                values: [UnderPlayerControl, -1000, 0]
+
+      - name: "Keybinding: Move left [up]"
+        components:
+          - type: KeybindingUp
+            values:
+              - KbLeft
+              - type: SetAcceleration
+                values: [UnderPlayerControl, 0, 0]
+
+      - name: "Keybinding: Move right"
+        components:
+          - type: Keybinding
+            values:
+              - KbRight
+              - type: SetAcceleration
+                values: [UnderPlayerControl, +1000, 0]
+
+      - name: "Keybinding: Move right [up]"
+        components:
+          - type: KeybindingUp
+            values:
+              - KbRight
+              - type: SetAcceleration
+                values: [UnderPlayerControl, 0, 0]
+
+      - name: "Ball"
+        components:
+          - type: Sprite
+            value: "ball.png"
+          - type: Position
+            values: [300, 300]
+          - type: Size
+            values: [10, 10]
+          - type: Velocity
+            values: [70, 133]
+          - type: ScalarAcceleration
+            value: 50
+          - type: Mass
+            value: 0.1
+          - type: Moment
+            value: 0
+          - type: Restitution
+            value: 0.8
+          - type: StaticFriction
+            value: 0
+          - type: DynamicFriction
+            value: 0
+          - type: CollisionShape
+          - type: CircleShape
+            values: [0, 0, 5]
+
+      - name: "Player's bat"
+        components:
+          - type: UnderPlayerControl
+          - type: Sprite
+            value: "bat.png"
+          - type: Position
+            values: [400, 500]
+          - type: Size
+            values: [70, 10]
+          - type: Mass
+            value: 0
+          - type: Moment
+            value: 0
+          - type: Restitution
+            value: 2
+          - type: StaticFriction
+            value: 0
+          - type: DynamicFriction
+            value: 0
+          - type: CollisionShape
+          - type: InfiniteMassVsFixedBounce
+            value: 1.05
+          - type: AabbShape
+            values: [-35, -5, 35, 5]
+
+      - name: "Left wall"
+        components:
+          - type: Fixed
+          - type: Sprite
+            value: "vertical_wall.png"
+          - type: Position
+            values: [0, 300]
+          - type: Size
+            values: [5, 600]
+          - type: Mass
+            value: 0
+          - type: Moment
+            value: 0
+          - type: Restitution
+            value: 2
+          - type: StaticFriction
+            value: 0
+          - type: DynamicFriction
+            value: 0
+          - type: CollisionShape
+            value: 1
+          - type: AabbShape
+            values: [-2.5, -300, 2.5, 300]
+            
+      - name: "Right wall"
+        components:
+          - type: Fixed
+          - type: Sprite
+            value: "vertical_wall.png"
+          - type: Position
+            values: [600, 300]
+          - type: Size
+            values: [5, 600]
+          - type: Mass
+            value: 0
+          - type: Moment
+            value: 0
+          - type: Restitution
+            value: 2
+          - type: StaticFriction
+            value: 0
+          - type: DynamicFriction
+            value: 0
+          - type: CollisionShape
+            value: 2
+          - type: AabbShape
+            values: [-2.5, -300, 2.5, 300]
+            
+
+      - name: "Upmost wall"
+        components:
+          - type: Fixed
+          - type: Sprite
+            value: "horizontal_wall.png"
+          - type: Position
+            values: [300, 0]
+          - type: Size
+            values: [600, 5]
+          - type: Mass
+            value: 0
+          - type: Moment
+            value: 0
+          - type: Restitution
+            value: 2
+          - type: StaticFriction
+            value: 0
+          - type: DynamicFriction
+            value: 0
+          - type: CollisionShape
+            value: 3
+          - type: AabbShape
+            values: [-300, -2.5, 300, 2.5]
+            
+      - name: "Upmost wall"
+        components:
+          - type: Fixed
+          - type: Sprite
+            value: "horizontal_wall.png"
+          - type: Position
+            values: [300, 0]
+          - type: Size
+            values: [600, 5]
+          - type: Mass
+            value: 0
+          - type: Moment
+            value: 0
+          - type: Restitution
+            value: 2
+          - type: StaticFriction
+            value: 0
+          - type: DynamicFriction
+            value: 0
+          - type: CollisionShape
+            value: 3
+          - type: AabbShape
+            values: [-300, -2.5, 300, 2.5]
+            
 
 
   - name: "Pause Screen"

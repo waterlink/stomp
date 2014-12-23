@@ -13,6 +13,12 @@ class DebugSystem < Stomp::System
     got(:mouse_move, with: args)
   end
 
+  def update(dt)
+    Stomp::Component.each_entity(UnderPlayerControl) do |entity|
+      puts "Player Position: #{entity[Position]}"
+    end
+  end
+
   def draw
     draw_vectors(Position, Velocity, Gosu::Color::GREEN, Gosu::Color::RED, 5)
     draw_vectors(Position, Acceleration, Gosu::Color::BLUE, Gosu::Color::YELLOW, 1)

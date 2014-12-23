@@ -22,4 +22,4 @@
   - keybinding_system
   - world_system
 
-  #- debug_system
+  - debug_system
