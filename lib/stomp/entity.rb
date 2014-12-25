@@ -2,7 +2,7 @@ module Stomp
   class Entity < Struct.new(:name, :world)
     def self.from_hash(hash, world: nil)
       new(hash["name"])
-        .with_hash_components(hash["components"])
+        .with_hash_components(hash["components"].flatten)
         .with_world(world)
     end
 

@@ -1,3 +1,51 @@
+aliases:
+  - &the_block
+    - type: Enemy
+    - type: Sprite
+      value: "block.png"
+    - type: Size
+      values: [50, 20]
+    - type: Fixed
+    - type: Mass
+      value: 0
+    - type: Moment
+      value: 0
+    - type: Restitution
+      value: 2
+    - type: StaticFriction
+      value: 0
+    - type: DynamicFriction
+      value: 0
+    - type: CollisionShape
+    - type: AabbShape
+      values: [-25, -5, 25, 5]
+  
+    - type: OnDeath
+      value:
+  
+        - type: Sprite
+          value: "ball_explosion.png"
+        - type: Size
+          values: [10, 4]
+        - type: Animation
+          values:
+  
+            - 0.2
+            - 
+              - type: Size
+                values: [30, 16]
+              - type: Size
+                values: [45, 20]
+              - type: Size
+                values: [55, 24]
+              - type: Size
+                values: [65, 28]
+              - type: Size
+                values: [70, 32]
+  
+        - type: Decay
+          value: 0.8
+
 active_world: "Level 2"
 worlds:
   - name: "Level 2"
@@ -72,6 +120,11 @@ worlds:
           - type: Custom
             value: Life
 
+      - name: "Custom component: Life"
+        components:
+          - type: Custom
+            value: Enemy
+
       - name: "Lose condition"
         components:
           - type: Condition
@@ -88,6 +141,16 @@ worlds:
                       value: 0
                     - type: InflictedDamage
                       value: 10000
+
+      - name: "Win condition"
+        components:
+          - type: Condition
+            values:
+              - [count, Enemy]
+              - [eq, 0] 
+              - type: SwitchWorld
+                value: "Win Screen"
+
 
       - name: "Ball"
         components:
@@ -322,7 +385,67 @@ worlds:
                   value: 10000
               - []
 
-            
+
+      - name: "Block 1"
+        components:
+          - *the_block
+          - type: Position
+            values: [200, 200]
+
+      - name: "Block 2"
+        components:
+          - *the_block
+          - type: Position
+            values: [251, 200]
+          
+      - name: "Block 3"
+        components:
+          - *the_block
+          - type: Position
+            values: [302, 200]
+          
+      - name: "Block 4"
+        components:
+          - *the_block
+          - type: Position
+            values: [353, 200]
+          
+      - name: "Block 5"
+        components:
+          - *the_block
+          - type: Position
+            values: [404, 200]
+          
+      - name: "Block 6"
+        components:
+          - *the_block
+          - type: Position
+            values: [200, 221]
+
+      - name: "Block 7"
+        components:
+          - *the_block
+          - type: Position
+            values: [251, 221]
+          
+      - name: "Block 8"
+        components:
+          - *the_block
+          - type: Position
+            values: [302, 221]
+          
+      - name: "Block 9"
+        components:
+          - *the_block
+          - type: Position
+            values: [353, 221]
+          
+      - name: "Block 10"
+        components:
+          - *the_block
+          - type: Position
+            values: [404, 221]
+          
 
 
   - name: "Pause Screen"
@@ -385,6 +508,22 @@ worlds:
         components:
           - type: Sprite
             value: "lost.png"
+          - type: Position
+            values: [400, 300]
+          - type: Size
+            values: [398, 94]
+
+  - name: "Win Screen"
+    zoom: 1
+    origin: [0, 0]
+    axes: [1, 1]
+    gravity: 0
+    entities:
+
+      - name: "Win message"
+        components:
+          - type: Sprite
+            value: "won.png"
           - type: Position
             values: [400, 300]
           - type: Size
