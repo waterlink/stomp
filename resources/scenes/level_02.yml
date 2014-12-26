@@ -446,6 +446,66 @@ worlds:
           - type: Position
             values: [404, 221]
           
+      - name: "Block 11"
+        components:
+          - *the_block
+          - type: Position
+            values: [200, 242]
+
+      - name: "Block 12"
+        components:
+          - *the_block
+          - type: Position
+            values: [251, 242]
+          
+      - name: "Block 13"
+        components:
+          - *the_block
+          - type: Position
+            values: [302, 242]
+          
+      - name: "Block 14"
+        components:
+          - *the_block
+          - type: Position
+            values: [353, 242]
+          
+      - name: "Block 15"
+        components:
+          - *the_block
+          - type: Position
+            values: [404, 242]
+          
+      - name: "Block 16"
+        components:
+          - *the_block
+          - type: Position
+            values: [200, 263]
+
+      - name: "Block 17"
+        components:
+          - *the_block
+          - type: Position
+            values: [251, 263]
+          
+      - name: "Block 18"
+        components:
+          - *the_block
+          - type: Position
+            values: [302, 263]
+          
+      - name: "Block 19"
+        components:
+          - *the_block
+          - type: Position
+            values: [353, 263]
+          
+      - name: "Block 20"
+        components:
+          - *the_block
+          - type: Position
+            values: [404, 263]
+          
 
 
   - name: "Pause Screen"

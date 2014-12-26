@@ -29,7 +29,49 @@ class CollisionSystem < Stomp::System
   def resolve_collision(a, b)
     return unless same_layer?(a, b)
     return if a[Fixed] && b[Fixed]
+    return unless broad_aabb(a, b)
     with_callbacks(impulse_resolution(collision_normal(a, b), a, b), a, b)
+  end
+
+  def broad_aabb(a, b)
+    a[BroadAabbShape] ||= aabb_for(a)
+    b[BroadAabbShape] ||= aabb_for(b)
+    !!aabb_vs_aabb(a, b, type: BroadAabbShape)
+  end
+
+  def aabb_for(x, type: BroadAabbShape)
+    aabb_for_circle(x, type: type) ||
+      aabb_for_aabb(x, type: type) ||
+      aabb_for_rigid(x, type: type)
+  end
+
+  def aabb_for_circle(x, type: type)
+    return unless x[CircleShape]
+    shape = x[CircleShape]
+    min_x, min_y, max_x, max_y = [shape.x - shape.r, shape.y - shape.r,
+                                  shape.x + shape.r, shape.y + shape.r]
+    type[min_x, min_y, max_x, max_y]
+  end
+
+  def aabb_for_aabb(x, type: type)
+    return unless x[AabbShape]
+    rigid_out_of_aabb(x)
+    aabb_for_rigid(x, type: type)
+  end
+
+
+  def aabb_for_rigid(x, type: type)
+    return unless x[RigidShape]
+    x[Orient] ||= Orient[0]
+    vertices = Stomp::Math.shape_from(x[RigidShape].vertices, x[Orient].value)
+
+    min_x = vertices.map(&:first).min
+    min_y = vertices.map(&:last).min
+
+    max_x = vertices.map(&:first).max
+    max_y = vertices.map(&:last).max
+
+    type[min_x, min_y, max_x, max_y]
   end
 
   def with_callbacks(resolved, a, b)
@@ -142,17 +184,21 @@ class CollisionSystem < Stomp::System
               rigid_vs_rigid(a, b))
   end
 
-  # returns [nx, ny, penetration, contacts]
-  def circle_vs_rigid(a, b)
-    if b[AabbShape] && !b[RigidShape]
-      s = b[AabbShape]
+  def rigid_out_of_aabb(x)
+    if x[AabbShape] && !x[RigidShape]
+      s = x[AabbShape]
       x1, y1, x2, y2 = [s.min_x, s.min_y, s.max_x, s.max_y]
-      b[RigidShape] ||= RigidShape[[[x1, y1],
+      x[RigidShape] ||= RigidShape[[[x1, y1],
                                     [x1, y2],
                                     [x2, y2],
                                     [x2, y1],
                                     [x1, y1]]]
     end
+  end
+
+  # returns [nx, ny, penetration, contacts]
+  def circle_vs_rigid(a, b)
+    rigid_out_of_aabb(b)
 
     return unless a[CircleShape] && b[RigidShape]
 
@@ -236,25 +282,8 @@ class CollisionSystem < Stomp::System
   # returns [normal_x, normal_y, penetration]
   def rigid_vs_rigid(a, b)
 
-    if a[AabbShape] && !a[RigidShape]
-      s = a[AabbShape]
-      x1, y1, x2, y2 = [s.min_x, s.min_y, s.max_x, s.max_y]
-      a[RigidShape] ||= RigidShape[[[x1, y1],
-                                    [x1, y2],
-                                    [x2, y2],
-                                    [x2, y1],
-                                    [x1, y1]]]
-    end
-
-    if b[AabbShape] && !b[RigidShape]
-      s = b[AabbShape]
-      x1, y1, x2, y2 = [s.min_x, s.min_y, s.max_x, s.max_y]
-      b[RigidShape] ||= RigidShape[[[x1, y1],
-                                    [x1, y2],
-                                    [x2, y2],
-                                    [x2, y1],
-                                    [x1, y1]]]
-    end
+    rigid_out_of_aabb(a)
+    rigid_out_of_aabb(b)
 
     return unless a[RigidShape] && b[RigidShape]
 
@@ -337,17 +366,17 @@ class CollisionSystem < Stomp::System
   end
 
   # returns [normal_x, normal_y, penetration]
-  def aabb_vs_aabb(a, b)
-    return unless a[AabbShape] && b[AabbShape]
+  def aabb_vs_aabb(a, b, type: AabbShape)
+    return unless a[type] && b[type]
 
     nx, ny = [b[Position].x - a[Position].x,
               b[Position].y - a[Position].y]
 
-    aex, aey = [(a[AabbShape].max_x - a[AabbShape].min_x) * 0.5,
-                (a[AabbShape].max_y - a[AabbShape].min_y) * 0.5]
+    aex, aey = [(a[type].max_x - a[type].min_x) * 0.5,
+                (a[type].max_y - a[type].min_y) * 0.5]
 
-    bex, bey = [(b[AabbShape].max_x - b[AabbShape].min_x) * 0.5,
-                (b[AabbShape].max_y - b[AabbShape].min_y) * 0.5]
+    bex, bey = [(b[type].max_x - b[type].min_x) * 0.5,
+                (b[type].max_y - b[type].min_y) * 0.5]
 
     overx, overy = [aex + bex - nx.abs,
                     aey + bey - ny.abs]
