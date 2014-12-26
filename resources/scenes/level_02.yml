@@ -69,32 +69,38 @@ worlds:
           - type: Keybinding
             values:
               - KbLeft
-              - type: AddAcceleration
-                values: [UnderPlayerControl, -1000, 0]
+              - - type: LeftIsDown
+                - type: CreateEntity
+                  value:
+                    - - type: PlayerControlledRecently
+                    - - type: LeftWasntDown
 
       - name: "Keybinding: Move left [up]"
         components:
           - type: KeybindingUp
             values:
               - KbLeft
-              - type: AddAcceleration
-                values: [UnderPlayerControl, +1000, 0]
+              - - type: Drop
+                  value: LeftIsDown
 
       - name: "Keybinding: Move right"
         components:
           - type: Keybinding
             values:
               - KbRight
-              - type: AddAcceleration
-                values: [UnderPlayerControl, +1000, 0]
+              - - type: RightIsDown
+                - type: CreateEntity
+                  value:
+                    - - type: PlayerControlledRecently
+                    - - type: RightWasntDown
 
       - name: "Keybinding: Move right [up]"
         components:
           - type: KeybindingUp
             values:
               - KbRight
-              - type: AddAcceleration
-                values: [UnderPlayerControl, -1000, 0]
+              - - type: Drop
+                  value: RightIsDown
 
       - name: "Keybinding: Space bar"
         components:
@@ -124,6 +130,104 @@ worlds:
         components:
           - type: Custom
             value: Enemy
+
+      - name: "Custom component: LeftIsDown"
+        components:
+          - type: Custom
+            value: LeftIsDown
+
+      - name: "Custom component: RightIsDown"
+        components:
+          - type: Custom
+            value: RightIsDown
+
+      - name: "Custom component: LeftWasntDown"
+        components:
+          - type: Custom
+            value: LeftWasntDown
+
+      - name: "Custom component: RightWasntDown"
+        components:
+          - type: Custom
+            value: RightWasntDown
+
+      - name: "Custom component: PlayerControlledRecently"
+        components:
+          - type: Custom
+            value: PlayerControlledRecently
+
+      - name: "Move left condition"
+        components:
+          - type: MultiCondition
+            values:
+
+              - - predicate: [count, LeftIsDown]
+                  expectation: [eq, 1]
+                - predicate: [count, LeftWasntDown]
+                  expectation: [greater, 0]
+
+              - - type: AppendEntity
+                  values:
+                    - UnderPlayerControl
+
+                    - - type: Acceleration
+                        values: [-3000, 0]
+                      - type: LoseVelocityFactor
+                        value: 1.0
+                      - type: Velocity
+                        values: [0, 0]
+
+                - type: Drop
+                  value: LeftWasntDown
+
+      - name: "Move right condition"
+        components:
+          - type: MultiCondition
+            values:
+
+              - - predicate: [count, RightIsDown]
+                  expectation: [eq, 1]
+                - predicate: [count, RightWasntDown]
+                  expectation: [greater, 0]
+
+              - - type: AppendEntity
+                  values:
+                    - UnderPlayerControl
+
+                    - - type: Acceleration
+                        values: [+3000, 0]
+                      - type: LoseVelocityFactor
+                        value: 1.0
+                      - type: Velocity
+                        values: [0, 0]
+
+                - type: Drop
+                  value: RightWasntDown
+
+      - name: "Stop movement condition"
+        components:
+          - type: MultiCondition
+            values:
+
+              - - predicate: [count, LeftIsDown]
+                  expectation: [eq, 0]
+                - predicate: [count, RightIsDown]
+                  expectation: [eq, 0]
+                - predicate: [count, PlayerControlledRecently]
+                  expectation: [greater, 0]
+
+              - - type: AppendEntity
+                  values:
+                    - UnderPlayerControl
+
+                    - - type: Acceleration
+                        values: [0, 0]
+                      - type: LoseVelocityFactor
+                        value: 0.8
+
+                - type: Drop
+                  value: PlayerControlledRecently
+                        
 
       - name: "Lose condition"
         components:
@@ -163,8 +267,10 @@ worlds:
             values: [10, 10]
           - type: Velocity
             values: [0, 0]
+          - type: MaxVelocity
+            values: 900
           - type: ScalarAcceleration
-            value: 150
+            value: 350
           - type: Mass
             value: 0.1
           - type: Moment
@@ -225,6 +331,10 @@ worlds:
             value: "bat.png"
           - type: Position
             values: [400, 570]
+          - type: MaxVelocity
+            value: 700
+          - type: LoseVelocityFactor
+            value: 0.8
           - type: Size
             values: [70, 10]
           - type: Mass
@@ -240,10 +350,18 @@ worlds:
           - type: CollisionShape
           - type: InfiniteMassVsFixedBounce
             value: 1.05
-          - type: AabbShape
-            values: [-35, -5, 35, 5]
           - type: Magnet
             value: 1000
+
+          - type: RigidShape
+            value:
+              - [-35, -2]
+              - [-29, -5]
+              - [29, -5]
+              - [35, -2]
+              - [35, 5]
+              - [-35, 5]
+              - [-35, 0]
 
           - type: DamageResistance
             value: 1.01

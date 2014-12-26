@@ -61,6 +61,10 @@ module Stomp
         (x1 - x2) ** 2 + (y1 - y2) ** 2
       end
 
+      def hypot(a, b)
+        ::Math.sqrt(hypot2(a, b))
+      end
+
       def squared_vector(v)
         dot_product(v, v)
       end

@@ -4,7 +4,7 @@ module Stomp
 
     def self.from_hash(hash, world: nil)
       new(hash["name"])
-        .with_hash_components(hash["components"].flatten)
+        .with_hash_components(hash["components"])
         .with_world(world)
     end
 
@@ -27,7 +27,7 @@ module Stomp
     end
 
     def with_hash_components(components)
-      Component.from_hash_list(components).each do |component|
+      Component.from_hash_list(components.flatten).each do |component|
         self[component.class] = component
       end
       self
@@ -61,7 +61,16 @@ module Stomp
       end
     end
 
+    def drop_if_empty
+      return unless empty?
+      drop
+    end
+
     private
+
+    def empty?
+      components.values.none?
+    end
 
     def register(type, component)
       components[type] = Component.register(self, type, component)

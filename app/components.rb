@@ -12,9 +12,15 @@ PreviousPosition = Stomp.component("PreviousPosition", :x, :y)
 Velocity = Stomp.component("Velocity", :x, :y)
 Acceleration = Stomp.component("Acceleration", :x, :y)
 ScalarAcceleration = Stomp.component("ScalarAcceleration", :value)
+MaxVelocity = Stomp.component("MaxVelocity", :value)
 
 SetAcceleration = Stomp.component("SetAcceleration", :component, :x, :y)
 AddAcceleration = Stomp.component("AddAcceleration", :component, :x, :y)
+SetVelocity = Stomp.component("SetVelocity", :component, :x, :y)
+LoseVelocity = Stomp.component("LoseVelocity", :component, :x, :y)
+AddVelocity = Stomp.component("AddVelocity", :component, :x, :y)
+
+LoseVelocityFactor = Stomp.component("LoseVelocityFactor", :value)
 
 Orient = Stomp.component("Orient", :value)
 AngularVelocity = Stomp.component("AngularVelocity", :value)
@@ -64,7 +70,10 @@ DynamicFriction = Stomp.component("DynamicFriction", :value)
 PlanetSurface = Stomp.component("PlanetSurface")
 
 UnderPlayerControl = Stomp.component("UnderPlayerControl")
+
 AppendEntity = Stomp.component("AppendEntity", :type, :component_list)
+Drop = Stomp.component("Drop", :component)
+CreateEntity = Stomp.component("CreateEntity", :entity_list)
 
 Health = Stomp.component("Health", :value)
 DamageResistance = Stomp.component("DamageResistance", :value)
@@ -79,3 +88,4 @@ TimedAction = Stomp.component("TimedAction", :timeout, :action, :time)
 Magnet = Stomp.component("Magnet", :power)
 
 Condition = Stomp.component("Condition", :predicate, :expectation, :action)
+MultiCondition = Stomp.component("MultiCondition", :conditions, :action)

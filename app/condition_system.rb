@@ -1,13 +1,85 @@
 class ConditionSystem < Stomp::System
   def update(dt)
-    Stomp::Component.each_entity(Condition) do |entity|
-      Wrapper[Condition, entity].call(dt)
-    end
+    generic_condition(ConditionWrapper, Condition, dt)
+    generic_condition(MultiConditionWrapper, MultiCondition, dt)
   end
 
   private
 
-  class Wrapper < Struct.new(:type, :entity)
+  def generic_condition(condition_type, entity_type, dt)
+    Stomp::Component.each_entity(entity_type) do |entity|
+      condition_type[entity_type, entity].call(dt)
+    end
+  end
+
+  class MultiConditionWrapper < Struct.new(:type, :entity)
+    def call(_)
+      return unless met_expectation?
+      create_action
+    end
+
+    private
+
+    def met_expectation?
+      conditions.all?(&:met?)
+    end
+    
+    def create_action
+      Stomp::Entity
+        .new(name)
+        .with_hash_components([component])
+    end
+
+    def conditions
+      condition_list.map(&method(:build_condition))
+    end
+
+    def build_condition(condition)
+      ConditionEntry[condition]
+    end
+
+    def condition_list
+      action.conditions
+    end
+
+    def name
+      "#{entity.name}: Action"
+    end
+
+    def component
+      action.action
+    end
+
+    def action
+      @_action ||= entity[type]
+    end
+  end
+
+  class ConditionEntry < Struct.new(:raw_condition)
+    def met?
+      expectation.met?(predicate)
+    end
+
+    private
+
+    def expectation
+      Expectation[raw_expectation]
+    end
+
+    def predicate
+      Predicate[raw_predicate]
+    end
+
+    def raw_expectation
+      raw_condition["expectation"]
+    end
+
+    def raw_predicate
+      raw_condition["predicate"]
+    end
+  end
+
+  class ConditionWrapper < Struct.new(:type, :entity)
     def call(_)
       return unless met_expectation?
       create_action

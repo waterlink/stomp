@@ -6,10 +6,14 @@ class MovementSystem < Stomp::System
     #debug_info(dt)
     set_acceleration(dt)
     add_acceleration(dt)
+    lose_velocity_action(dt)
+    add_velocity_action(dt)
+    set_velocity(dt)
     update_acceleration(dt)
     update_scalar_acceleration(dt)
     update_velocity(dt)
     lose_velocity(dt)
+    limit_velocity(dt)
     update_position(dt)
     @_tick = tick + 1
   end
@@ -32,6 +36,36 @@ class MovementSystem < Stomp::System
     end
   end
 
+  def set_velocity(dt)
+    action_with_source(SetVelocity) do |source, target|
+      target[Velocity] ||= Velocity[0, 0]
+      target[Velocity].x = source.x
+      target[Velocity].y = source.y
+    end
+  end
+
+  def lose_velocity_action(dt)
+    action_with_source(LoseVelocity) do |source, target|
+      target[Velocity] ||= Velocity[0, 0]
+      target[Velocity].x -= source.x if same_sign?(target[Velocity].x, source.x)
+      target[Velocity].y -= source.y if same_sign?(target[Velocity].y, source.y)
+    end
+  end
+
+  def same_sign?(a, b)
+    [a < 0 && b < 0,
+     a > 0 && b > 0,
+     a == 0 && b == 0].any?
+  end
+
+  def add_velocity_action(dt)
+    action_with_source(AddVelocity) do |source, target|
+      target[Velocity] ||= Velocity[0, 0]
+      target[Velocity].x += source.x
+      target[Velocity].y += source.y
+    end
+  end
+
   def add_acceleration(dt)
     action_with_source(AddAcceleration) do |source, target|
       target[Acceleration] ||= Acceleration[0, 0]
@@ -48,7 +82,8 @@ class MovementSystem < Stomp::System
         blk[source, target]
       end
 
-      entity.drop
+      entity.remove(type)
+      entity.drop_if_empty
     end
   end
 
@@ -87,6 +122,20 @@ class MovementSystem < Stomp::System
     end
   end
 
+  def limit_velocity(dt)
+    Stomp::Component.each_entity(MaxVelocity) do |entity|
+      next unless entity[Velocity]
+      max_velocity = entity[MaxVelocity].value
+      v = Stomp::Math.to_v(entity[Velocity])
+      scalar_velocity = Stomp::Math.hypot([0, 0], v)
+      next if scalar_velocity < max_velocity
+      v = Stomp::Math.normalize_vector(v)
+      v = Stomp::Math.vmul(v, max_velocity)
+      entity[Velocity].x = v[0]
+      entity[Velocity].y = v[1]
+    end
+  end
+
   def infinite_mass?(entity)
     entity[Mass] && entity[Mass].value == 0
   end
@@ -94,8 +143,9 @@ class MovementSystem < Stomp::System
   def lose_velocity(dt)
     Stomp::Component.each_entity(Velocity) do |entity|
       next if entity[Fixed]
-      entity[Velocity].x *= VELOCITY_LOSS
-      entity[Velocity].y *= VELOCITY_LOSS
+      loss = entity[LoseVelocityFactor] ? entity[LoseVelocityFactor].value : VELOCITY_LOSS
+      entity[Velocity].x *= loss
+      entity[Velocity].y *= loss
     end
   end
 
