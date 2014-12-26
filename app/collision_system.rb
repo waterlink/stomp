@@ -16,19 +16,94 @@ class CollisionSystem < Stomp::System
   EPS = 1e-7
 
   def update(dt)
+    #Stomp::Component.each_entity(CollisionShape) do |entity|
+    #  Stomp::Component.each_entity(CollisionShape) do |other|
+    #    next if other == entity
+    #    _resolve_collision(entity, other)
+    #  end
+    #end
+    entities = []
     Stomp::Component.each_entity(CollisionShape) do |entity|
-      Stomp::Component.each_entity(CollisionShape) do |other|
-        next if other == entity
-        resolve_collision(entity, other)
-      end
+      entities << entity
     end
+    sort_and_sweep(entities)
   end
 
   private
 
+  def sort_and_sweep(entities)
+    marks_x = marks_for_x(entities)
+    marks_y = marks_for_y(entities)
+    checks_x = checks_for(marks_x)
+    checks_y = checks_for(marks_y)
+    sweep_for(checks_x < checks_y ? marks_x : marks_y)
+  end
+
+  def sweep_for(marks)
+    stack = []
+    marks.each do |(x, type, entity)|
+      case type
+      when :open
+        stack.each { |other| resolve_collision(entity, other) }
+        stack << entity
+      when :close
+        stack.delete_if { |e| e == entity }
+      end
+    end
+  end
+
+  def checks_for(marks)
+    stack = 0
+    count = 0
+    marks.each do |(x, type, entity)|
+      case type
+      when :open
+        count += stack
+        stack += 1
+      when :close
+        stack -= 1
+      end
+    end
+    count
+  end
+
+  def marks_for_x(entities, aabb_type: BroadAabbShape, position_type: Position)
+    marks = []
+    entities.each do |e|
+      e[aabb_type] ||= aabb_for(e, type: aabb_type)
+      origin_x = e[position_type].x
+      shape = e[aabb_type]
+      open_x = shape.min_x + origin_x
+      close_x = shape.max_x + origin_x
+      marks << [open_x, :open, e]
+      marks << [close_x, :close, e]
+    end
+    marks.sort
+  end
+
+  def marks_for_y(entities, aabb_type: BroadAabbShape, position_type: Position)
+    marks = []
+    entities.each do |e|
+      e[aabb_type] ||= aabb_for(e, type: aabb_type)
+      origin_y = e[position_type].y
+      shape = e[aabb_type]
+      open_y = shape.min_y + origin_y
+      close_y = shape.max_y + origin_y
+      marks << [open_y, :open, e]
+      marks << [close_y, :close, e]
+    end
+    marks.sort
+  end
+
   def resolve_collision(a, b)
+    return if a == b
     return unless same_layer?(a, b)
     return if a[Fixed] && b[Fixed]
+    _resolve_collision(a, b)
+    _resolve_collision(b, a)
+  end
+
+  def _resolve_collision(a, b)
     return unless broad_aabb(a, b)
     with_callbacks(impulse_resolution(collision_normal(a, b), a, b), a, b)
   end

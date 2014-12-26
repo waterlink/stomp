@@ -1,5 +1,7 @@
 module Stomp
   class Entity < Struct.new(:name, :world)
+    include Enumerable
+
     def self.from_hash(hash, world: nil)
       new(hash["name"])
         .with_hash_components(hash["components"].flatten)
@@ -13,6 +15,15 @@ module Stomp
     def initialize(*args)
       super
       with_world(world || World.active_world)
+    end
+
+    def ==(other)
+      return false unless self.class === other
+      self.object_id == other.object_id
+    end
+
+    def <=>(other)
+      self.object_id <=> other.object_id
     end
 
     def with_hash_components(components)
