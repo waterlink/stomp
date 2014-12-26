@@ -28,6 +28,7 @@ class CollisionSystem < Stomp::System
 
   def resolve_collision(a, b)
     return unless same_layer?(a, b)
+    return if a[Fixed] && b[Fixed]
     with_callbacks(impulse_resolution(collision_normal(a, b), a, b), a, b)
   end
 
