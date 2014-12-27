@@ -195,6 +195,10 @@ worlds:
           - type: LayerIndex
             value: 1000
 
+          - type: TextRenderingRules
+            value:
+              "0": "text/0-special.png"
+
       - name: "Move left condition"
         components:
           - type: MultiCondition

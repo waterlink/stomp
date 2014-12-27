@@ -123,7 +123,7 @@ class TextSpriteSystem < Stomp::System
     end
 
     def path
-      paths[letter] ||= path_from_local_rule || path_from_global_rule
+      paths[letter] ||= sprite_path(path_from_local_rule || path_from_global_rule)
     end
 
     def paths
@@ -136,7 +136,7 @@ class TextSpriteSystem < Stomp::System
 
     def path_from_global_rule
       with_global_rule do |path|
-        return sprite_path(path) if path
+        return path if path
       end
       nil
     end
