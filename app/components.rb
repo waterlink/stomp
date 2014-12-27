@@ -77,6 +77,7 @@ CreateEntity = Stomp.component("CreateEntity", :entity_list)
 
 SetComponent = Stomp.component("SetComponent", :target, :component, :value)
 AddToComponent = Stomp.component("AddToComponent", :target, :component, :value)
+RemoveComponent = Stomp.component("RemoveComponent", :target, :component)
 
 Health = Stomp.component("Health", :value)
 DamageResistance = Stomp.component("DamageResistance", :value)

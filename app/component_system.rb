@@ -2,6 +2,7 @@ class ComponentSystem < Stomp::System
   def update(dt)
     generic_action(SetComponentWrapper, SetComponent, dt)
     generic_action(AddToComponentWrapper, AddToComponent, dt)
+    generic_action(RemoveComponentWrapper, RemoveComponent, dt)
   end
 
   private
@@ -32,7 +33,12 @@ class ComponentSystem < Stomp::System
     end
 
     def with_target(&blk)
+      return with_self(&blk) if target == "self"
       Stomp::Component.each_entity(target, &blk)
+    end
+
+    def with_self(&blk)
+      blk[entity]
     end
 
     def target
@@ -69,4 +75,28 @@ class ComponentSystem < Stomp::System
       target[component].value += value
     end
   end
+
+  class RemoveComponentWrapper < CommonWrapper
+
+    private
+
+    def adjust_component(target)
+      remove_component(target, component)
+      target.drop_if_empty
+    end
+
+    def remove_component(target, component)
+      return remove_components(target, component) if Array === component
+      target.remove(component)
+    end
+
+    def remove_components(target, components)
+      components.each(&curry_method(target, &method(:remove_component)))
+    end
+
+    def curry_method(*args, &blk)
+      -> (*other_args) { blk[*(args + other_args)] }
+    end
+  end
+
 end

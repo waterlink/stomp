@@ -103,7 +103,18 @@ class EntitySystem < Stomp::System
     end
 
     def with_target(&blk)
+      return with_target_for_options(&blk) if Array === target_type
       Stomp::Component.each_entity(target_type, &blk)
+    end
+
+    def with_target_for_options(&blk)
+      option, type = target_type
+      case option
+      when "first"
+        Stomp::Component.each_entity(type) do |target|
+          return blk[target]
+        end
+      end
     end
 
     def target_type
