@@ -7,8 +7,11 @@
 :common_world: "Common"
 :systems:
   - init_system
+  - component_system
+  - entity_system
   - mouse_arrow_system
   - sprite_system
+  - text_sprite_system
   - menu_system
   - exit_system
   - scene_system
@@ -26,7 +29,6 @@
   - animation_system
   - timeout_system
   - magnet_system
-  - entity_system
   - condition_system
 
   #- debug_system

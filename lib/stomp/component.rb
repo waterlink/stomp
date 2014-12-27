@@ -70,16 +70,16 @@ module Stomp
         components_of(type)[id]
       end
 
-      private
-
       def auto_type(type)
         return type_from_name(type) if String === type
         type
       end
 
+      private
+
       def handle_custom_component(component)
         return unless custom?(component)
-        Stomp.component(component.name)
+        Stomp.component(component.name, :value)
       end
 
       def custom?(component)

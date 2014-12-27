@@ -43,15 +43,18 @@ module Stomp
     end
 
     def []=(type, component)
+      type = auto(type)
       remove(type)
       register(type, component)
     end
 
     def [](type)
+      type = auto(type)
       fetch(type, components[type])
     end
 
     def remove(type)
+      type = auto(type)
       unregister(type, components[type])
     end
 
@@ -67,6 +70,10 @@ module Stomp
     end
 
     private
+
+    def auto(type)
+      Component.auto_type(type)
+    end
 
     def empty?
       components.values.none?

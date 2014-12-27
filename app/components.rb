@@ -75,6 +75,9 @@ AppendEntity = Stomp.component("AppendEntity", :type, :component_list)
 Drop = Stomp.component("Drop", :component)
 CreateEntity = Stomp.component("CreateEntity", :entity_list)
 
+SetComponent = Stomp.component("SetComponent", :target, :component, :value)
+AddToComponent = Stomp.component("AddToComponent", :target, :component, :value)
+
 Health = Stomp.component("Health", :value)
 DamageResistance = Stomp.component("DamageResistance", :value)
 InflictedDamage = Stomp.component("InflictedDamage", :value)
@@ -89,3 +92,8 @@ Magnet = Stomp.component("Magnet", :power)
 
 Condition = Stomp.component("Condition", :predicate, :expectation, :action)
 MultiCondition = Stomp.component("MultiCondition", :conditions, :action)
+
+TextSprite = Stomp.component("TextSprite", :component)
+# TextFormat: size: [w, h]; align: on_of[left, right]; margin: int
+TextFormat = Stomp.component("TextFormat", :size, :align, :margin)
+TextRenderingRules = Stomp.component("TextRenderingRules", :rules)
