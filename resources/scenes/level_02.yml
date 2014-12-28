@@ -222,7 +222,7 @@ worlds:
               - KbSpace
               - type: AppendEntity
                 values:
-                  - UnderPlayerControl
+                  - Player
                   -
                     - type: Magnet
                       value: 0
@@ -244,10 +244,15 @@ worlds:
           - type: Custom
             value: SpareLife
 
-      - name: "Custom component: Life"
+      - name: "Custom component: Enemy"
         components:
           - type: Custom
             value: Enemy
+
+      - name: "Custom component: Player"
+        components:
+          - type: Custom
+            value: Player
 
       - name: "Custom component: LeftIsDown"
         components:
@@ -314,7 +319,7 @@ worlds:
 
               - - type: AppendEntity
                   values:
-                    - UnderPlayerControl
+                    - Player
 
                     - - type: Acceleration
                         values: [-5000, 0]
@@ -338,7 +343,7 @@ worlds:
 
               - - type: AppendEntity
                   values:
-                    - UnderPlayerControl
+                    - Player
 
                     - - type: Acceleration
                         values: [+5000, 0]
@@ -364,7 +369,7 @@ worlds:
 
               - - type: AppendEntity
                   values:
-                    - UnderPlayerControl
+                    - Player
 
                     - - type: Acceleration
                         values: [0, 0]
@@ -383,7 +388,7 @@ worlds:
               - [eq, 0] 
               - type: AppendEntity
                 values:
-                  - UnderPlayerControl
+                  - Player
                   -
                     - type: Health
                       value: 0.01
@@ -423,7 +428,7 @@ worlds:
 
                       - type: AppendEntity
                         values:
-                          - UnderPlayerControl
+                          - Player
                           - - *magnet
 
       - name: "Ball"
@@ -450,7 +455,7 @@ worlds:
 
       - name: "Player's bat"
         components:
-          - type: UnderPlayerControl
+          - type: Player
           - type: Sprite
             value: "bat.png"
           - type: Position

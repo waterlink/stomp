@@ -2,7 +2,6 @@ Sprite = Stomp.component("Sprite", :path)
 LayerIndex = Stomp.component("LayerIndex", :value)
 Size = Stomp.component("Size", :x, :y)
 
-Menu = Stomp.component("Menu")
 MenuItem = Stomp.component("MenuItem", :nonhover, :hover, :action, :hovered)
 
 ExitAction = Stomp.component("ExitAction")
@@ -68,8 +67,6 @@ StaticFriction = Stomp.component("StaticFriction", :value)
 DynamicFriction = Stomp.component("DynamicFriction", :value)
 
 PlanetSurface = Stomp.component("PlanetSurface")
-
-UnderPlayerControl = Stomp.component("UnderPlayerControl")
 
 AppendEntity = Stomp.component("AppendEntity", :type, :component_list)
 Drop = Stomp.component("Drop", :component)

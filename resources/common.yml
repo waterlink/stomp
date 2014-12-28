@@ -8,7 +8,6 @@ worlds:
 
       - name: "Main Menu"
         components:
-          - type: Menu
           - type: Sprite
             value: "main_menu.png"
           - type: LayerIndex
